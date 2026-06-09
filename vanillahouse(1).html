@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VanillaHouse — Minecraft Server</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --grass: #5d8a3c;
+    --grass-dark: #3d6b22;
+    --dirt: #8b5e3c;
+    --dirt-dark: #6b3e1c;
+    --stone: #7a7a7a;
+    --stone-dark: #4a4a4a;
+    --wood: #9c7a4a;
+    --sky: #87ceeb;
+    --night: #0a0f1e;
+    --gold: #f5c518;
+    --diamond: #4fc3f7;
+    --hunter: #8bc34a;
+    --miner: #90caf9;
+    --griefer: #ef5350;
+    --pixel: 4px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'VT323', monospace;
+    background: var(--night);
+    color: #e0e0e0;
+    overflow-x: hidden;
+  }
+
+  /* ====== ANIMATED SKY BG ====== */
+  #sky-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(180deg, #0a0f1e 0%, #1a1f3e 40%, #2a1f3e 70%, #1a0a0e 100%);
+    overflow: hidden;
+  }
+
+  .stars {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, white, transparent),
+      radial-gradient(1px 1px at 25% 8%, white, transparent),
+      radial-gradient(1.5px 1.5px at 40% 22%, white, transparent),
+      radial-gradient(1px 1px at 55% 5%, white, transparent),
+      radial-gradient(1px 1px at 70% 18%, white, transparent),
+      radial-gradient(1.5px 1.5px at 85% 10%, white, transparent),
+      radial-gradient(1px 1px at 15% 35%, white, transparent),
+      radial-gradient(1px 1px at 60% 30%, white, transparent),
+      radial-gradient(1.5px 1.5px at 90% 25%, white, transparent),
+      radial-gradient(1px 1px at 5% 50%, rgba(255,255,255,0.6), transparent),
+      radial-gradient(1px 1px at 35% 45%, rgba(255,255,255,0.6), transparent),
+      radial-gradient(1px 1px at 75% 40%, rgba(255,255,255,0.6), transparent);
+    animation: twinkle 4s ease-in-out infinite alternate;
+  }
+
+  @keyframes twinkle {
+    0% { opacity: 0.6; }
+    100% { opacity: 1; }
+  }
+
+  /* Floating blocks */
+  .float-block {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    image-rendering: pixelated;
+    animation: floatUp 20s linear infinite;
+    opacity: 0.15;
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.15; }
+    90% { opacity: 0.15; }
+    100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+  }
+
+  /* Ground strip */
+  .ground {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    z-index: 1;
+    display: flex;
+  }
+
+  .ground-block {
+    flex: 1;
+    height: 100%;
+    background: var(--grass);
+    border-top: 4px solid var(--grass-dark);
+    border-right: 2px solid rgba(0,0,0,0.3);
+    position: relative;
+  }
+
+  .ground-block::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 28px;
+    background: var(--dirt);
+    border-top: 3px solid var(--dirt-dark);
+  }
+
+  /* ====== LAYOUT ====== */
+  main {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 16px 100px;
+  }
+
+  /* ====== HEADER ====== */
+  .hero {
+    text-align: center;
+    padding: 60px 16px 40px;
+  }
+
+  .hero-logo {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(22px, 5vw, 40px);
+    color: var(--gold);
+    text-shadow:
+      3px 3px 0 #7a5a00,
+      -1px -1px 0 #b08000;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  .hero-sub {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(8px, 2vw, 13px);
+    color: var(--grass);
+    text-shadow: 2px 2px 0 var(--grass-dark);
+    margin-bottom: 32px;
+  }
+
+  @keyframes pulse {
+    0%, 100% { text-shadow: 3px 3px 0 #7a5a00, -1px -1px 0 #b08000; }
+    50% { text-shadow: 3px 3px 0 #7a5a00, -1px -1px 0 #b08000, 0 0 20px rgba(245,197,24,0.4); }
+  }
+
+  .ip-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0,0,0,0.6);
+    border: 3px solid var(--grass);
+    padding: 12px 24px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(9px, 2vw, 13px);
+    color: white;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    image-rendering: pixelated;
+  }
+
+  .ip-box:hover {
+    border-color: var(--gold);
+    background: rgba(0,0,0,0.8);
+  }
+
+  .copy-hint {
+    font-size: 11px;
+    color: var(--grass);
+    margin-top: 8px;
+    display: block;
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+  }
+
+  /* ====== PIXEL BLOCK SECTION HEADER ====== */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 56px 0 24px;
+  }
+
+  .block-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    image-rendering: pixelated;
+  }
+
+  .section-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(11px, 2.5vw, 16px);
+    color: var(--gold);
+    text-shadow: 2px 2px 0 #7a5a00;
+    line-height: 1.5;
+  }
+
+  /* ====== CARDS ====== */
+  .card {
+    background: rgba(0,0,0,0.55);
+    border: 2px solid var(--stone);
+    border-left: 4px solid var(--grass);
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    position: relative;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .card:hover {
+    background: rgba(0,0,0,0.7);
+    border-color: var(--gold);
+    border-left-color: var(--gold);
+  }
+
+  .card::before {
+    content: '▶';
+    position: absolute;
+    left: -16px;
+    top: 20px;
+    color: var(--grass);
+    font-size: 12px;
+    transition: color 0.2s;
+  }
+
+  .card:hover::before { color: var(--gold); }
+
+  .card-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(9px, 1.8vw, 12px);
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  .card p, .card li {
+    font-size: clamp(16px, 3vw, 20px);
+    line-height: 1.6;
+    color: #c8c8c8;
+  }
+
+  .card ul { padding-left: 20px; }
+  .card li { margin-bottom: 4px; }
+
+  .highlight { color: var(--gold); font-weight: bold; }
+  .green { color: var(--grass); }
+  .blue { color: var(--diamond); }
+  .red { color: var(--griefer); }
+
+  /* ====== FEATURES GRID ====== */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .feature-card {
+    background: rgba(0,0,0,0.55);
+    border: 2px solid var(--stone-dark);
+    padding: 20px 16px;
+    text-align: center;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .feature-card:hover {
+    border-color: var(--grass);
+    transform: translateY(-4px);
+  }
+
+  .feature-icon {
+    font-size: 32px;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .feature-card h3 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(7px, 1.5vw, 10px);
+    color: var(--gold);
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+
+  .feature-card p {
+    font-size: clamp(14px, 3vw, 18px);
+    color: #b0b0b0;
+    line-height: 1.5;
+  }
+
+  /* ====== DONATE CARDS ====== */
+  .donate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-bottom: 16px;
+  }
+
+  .donate-card {
+    border: 3px solid;
+    padding: 24px 20px;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .donate-card:hover {
+    transform: translateY(-6px);
+  }
+
+  .donate-card.hunter {
+    background: rgba(139, 195, 74, 0.1);
+    border-color: var(--hunter);
+  }
+
+  .donate-card.miner {
+    background: rgba(144, 202, 249, 0.1);
+    border-color: var(--miner);
+    position: relative;
+  }
+
+  .donate-card.griefer {
+    background: rgba(239, 83, 80, 0.1);
+    border-color: var(--griefer);
+  }
+
+  .donate-card.youtuber {
+    background: rgba(245, 197, 24, 0.1);
+    border-color: var(--gold);
+  }
+
+  .best-value {
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--miner);
+    color: #000;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    padding: 4px 10px;
+    white-space: nowrap;
+  }
+
+  .donate-rank {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(12px, 3vw, 18px);
+    margin-bottom: 6px;
+  }
+
+  .donate-card.hunter .donate-rank { color: var(--hunter); }
+  .donate-card.miner .donate-rank { color: var(--miner); }
+  .donate-card.griefer .donate-rank { color: var(--griefer); }
+  .donate-card.youtuber .donate-rank { color: var(--gold); }
+
+  .donate-price {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(16px, 4vw, 24px);
+    color: white;
+    margin-bottom: 16px;
+  }
+
+  .donate-perks {
+    list-style: none;
+    margin-bottom: 20px;
+  }
+
+  .donate-perks li {
+    font-size: clamp(14px, 3vw, 18px);
+    color: #c0c0c0;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .donate-perks li::before {
+    content: '✦';
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .donate-card.hunter .donate-perks li::before { color: var(--hunter); }
+  .donate-card.miner .donate-perks li::before { color: var(--miner); }
+  .donate-card.griefer .donate-perks li::before { color: var(--griefer); }
+  .donate-card.youtuber .donate-perks li::before { color: var(--gold); }
+
+  .cmd {
+    font-family: monospace;
+    background: rgba(0,0,0,0.5);
+    padding: 1px 5px;
+    font-size: 14px;
+    color: #90ee90;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .inherited-note {
+    font-size: 13px;
+    color: #888;
+    font-style: italic;
+    margin-bottom: 10px;
+    font-family: 'VT323', monospace;
+  }
+
+  /* Donate button */
+  .btn-donate {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(7px, 1.5vw, 10px);
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: 2px solid;
+    background: transparent;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .donate-card.hunter .btn-donate {
+    color: var(--hunter);
+    border-color: var(--hunter);
+  }
+  .donate-card.hunter .btn-donate:hover {
+    background: var(--hunter);
+    color: #000;
+  }
+
+  .donate-card.miner .btn-donate {
+    color: var(--miner);
+    border-color: var(--miner);
+  }
+  .donate-card.miner .btn-donate:hover {
+    background: var(--miner);
+    color: #000;
+  }
+
+  .donate-card.griefer .btn-donate {
+    color: var(--griefer);
+    border-color: var(--griefer);
+  }
+  .donate-card.griefer .btn-donate:hover {
+    background: var(--griefer);
+    color: #000;
+  }
+
+  .donate-card.youtuber .btn-donate {
+    color: var(--gold);
+    border-color: var(--gold);
+  }
+  .donate-card.youtuber .btn-donate:hover {
+    background: var(--gold);
+    color: #000;
+  }
+
+  /* ====== RULES / INFO CARDS ====== */
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .rule-card {
+    background: rgba(0,0,0,0.55);
+    border: 2px solid var(--stone-dark);
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+
+  .rule-card:hover { border-color: var(--griefer); }
+
+  .rule-card.green:hover { border-color: var(--grass); }
+
+  .rule-icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .rule-card h3 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(7px, 1.5vw, 10px);
+    color: var(--gold);
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+
+  .rule-card p {
+    font-size: clamp(15px, 3vw, 19px);
+    color: #c0c0c0;
+    line-height: 1.55;
+  }
+
+  /* ====== FOOTER / CONTACTS ====== */
+  .contact-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 40px;
+    padding: 24px;
+    background: rgba(0,0,0,0.6);
+    border: 2px solid var(--stone);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(7px, 1.5vw, 10px);
+    text-decoration: none;
+    border: 2px solid;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .contact-btn.tg {
+    color: var(--diamond);
+    border-color: var(--diamond);
+  }
+  .contact-btn.tg:hover {
+    background: var(--diamond);
+    color: #000;
+  }
+
+  .contact-btn.support {
+    color: var(--grass);
+    border-color: var(--grass);
+  }
+  .contact-btn.support:hover {
+    background: var(--grass);
+    color: #000;
+  }
+
+  .footer-text {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 16px;
+    color: #555;
+  }
+
+  /* ====== NAV ====== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(0,0,0,0.85);
+    border-bottom: 3px solid var(--grass-dark);
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+
+  nav a {
+    display: block;
+    padding: 14px 18px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(6px, 1.2vw, 9px);
+    color: #aaa;
+    text-decoration: none;
+    white-space: nowrap;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    transition: color 0.15s, background 0.15s;
+  }
+
+  nav a:hover {
+    color: var(--gold);
+    background: rgba(255,255,255,0.04);
+  }
+
+  /* ====== DIVIDER ====== */
+  .pixel-divider {
+    display: flex;
+    height: 8px;
+    overflow: hidden;
+    margin: 40px 0;
+    gap: 2px;
+  }
+  .pixel-divider span {
+    flex: 1;
+    height: 100%;
+    background: var(--grass);
+    opacity: 0.3;
+  }
+  .pixel-divider span:nth-child(3n) { background: var(--dirt); opacity: 0.25; }
+  .pixel-divider span:nth-child(5n) { background: var(--stone); opacity: 0.2; }
+
+  /* Pixel corners effect */
+  .pixel-border {
+    position: relative;
+    border: 3px solid var(--grass-dark);
+    padding: 24px;
+    margin-bottom: 24px;
+    background: rgba(0,0,0,0.5);
+  }
+
+  .pixel-border::before, .pixel-border::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: var(--night);
+  }
+
+  .pixel-border::before { top: -3px; left: -3px; }
+  .pixel-border::after { bottom: -3px; right: -3px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0a0f1e; }
+  ::-webkit-scrollbar-thumb { background: var(--grass-dark); }
+
+  /* Toast */
+  #toast {
+    position: fixed;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--grass-dark);
+    color: white;
+    padding: 10px 24px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    border: 2px solid var(--gold);
+  }
+
+  #toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (max-width: 600px) {
+    .section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .contact-bar { flex-direction: column; }
+    .donate-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div id="sky-bg">
+  <div class="stars"></div>
+</div>
+
+<!-- Animated floating blocks -->
+<script>
+  const colors = ['#5d8a3c','#8b5e3c','#7a7a7a','#f5c518','#4fc3f7'];
+  const symbols = ['▪','◼','◾','▫','◻'];
+  const bg = document.getElementById('sky-bg');
+  for (let i = 0; i < 18; i++) {
+    const b = document.createElement('div');
+    b.className = 'float-block';
+    b.style.left = Math.random() * 100 + 'vw';
+    b.style.animationDelay = (Math.random() * 20) + 's';
+    b.style.animationDuration = (15 + Math.random() * 20) + 's';
+    b.style.background = colors[Math.floor(Math.random() * colors.length)];
+    b.style.width = b.style.height = (20 + Math.random() * 30) + 'px';
+    bg.appendChild(b);
+  }
+</script>
+
+<nav>
+  <a href="#about">
+    <svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect width="8" height="4" x="4" fill="#8b5e3c"/><rect width="2" height="8" x="3" y="4" fill="#8b5e3c"/><rect width="10" height="2" x="3" y="8" fill="#8b5e3c"/><rect width="2" height="2" x="7" y="4" fill="#6b3e1c"/></svg>
+    О сервере</a>
+  <a href="#donate">
+    <svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="0" width="8" height="2" fill="#4fc3f7"/><rect x="2" y="2" width="12" height="2" fill="#4fc3f7"/><rect x="1" y="4" width="14" height="2" fill="#81d4fa"/><rect x="0" y="6" width="16" height="4" fill="#81d4fa"/><rect x="1" y="10" width="14" height="2" fill="#4fc3f7"/><rect x="2" y="12" width="12" height="2" fill="#4fc3f7"/><rect x="4" y="14" width="8" height="2" fill="#0288d1"/></svg>
+    Донат</a>
+  <a href="#security">
+    <svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="0" width="10" height="2" fill="#ef5350"/><rect x="1" y="2" width="14" height="12" fill="#c62828"/><rect x="3" y="4" width="10" height="2" fill="#ef9a9a"/><rect x="5" y="6" width="6" height="6" fill="#ffcdd2"/><rect x="6" y="7" width="4" height="4" fill="#c62828"/></svg>
+    Защита</a>
+  <a href="#contacts">
+    <svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect width="16" height="16" fill="#1976d2"/><rect x="2" y="3" width="12" height="1" fill="#90caf9"/><rect x="2" y="5" width="8" height="1" fill="#90caf9"/><rect x="2" y="9" width="12" height="1" fill="#90caf9"/><rect x="2" y="11" width="6" height="1" fill="#90caf9"/></svg>
+    Контакты</a>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-logo">VanillaHouse</div>
+    <div class="hero-sub">Vanilla Survival · Griefing · Pure Minecraft</div>
+    <div style="margin-top: 24px;">
+      <div class="ip-box" onclick="copyIP()" title="Нажми чтобы скопировать">
+        <span style="color: #666; font-size: 10px;">IP:</span>
+        <span id="ip-text">today.vanilla.house</span>
+        <span style="color: #555; font-size: 10px;">
+          <svg style="width:12px;height:12px;vertical-align:middle;" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="0" width="10" height="1" fill="#888"/><rect x="2" y="1" width="12" height="1" fill="#888"/><rect x="1" y="2" width="14" height="10" fill="#666"/><rect x="2" y="3" width="12" height="8" fill="#888"/><rect x="3" y="4" width="10" height="1" fill="#aaa"/><rect x="3" y="6" width="8" height="1" fill="#aaa"/><rect x="3" y="8" width="10" height="1" fill="#aaa"/></svg>
+        </span>
+      </div>
+      <span class="copy-hint">[ нажми чтобы скопировать ]</span>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-header">
+      <svg class="block-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <rect width="16" height="16" fill="#5d8a3c"/>
+        <rect y="4" width="16" height="12" fill="#8b5e3c"/>
+        <rect x="2" y="1" width="3" height="2" fill="#3d6b22"/>
+        <rect x="8" y="0" width="4" height="3" fill="#3d6b22"/>
+        <rect x="5" y="2" width="2" height="1" fill="#3d6b22"/>
+      </svg>
+      <div class="section-title">О сервере</div>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">
+          <svg viewBox="0 0 16 16" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="0" width="4" height="2" fill="#ffcc00"/>
+            <rect x="4" y="2" width="8" height="2" fill="#ffcc00"/>
+            <rect x="2" y="4" width="12" height="2" fill="#f5c518"/>
+            <rect x="2" y="6" width="5" height="4" fill="#f5c518"/>
+            <rect x="9" y="6" width="5" height="4" fill="#f5c518"/>
+            <rect x="4" y="10" width="8" height="2" fill="#ffcc00"/>
+            <rect x="6" y="12" width="4" height="2" fill="#cc9900"/>
+          </svg>
+        </span>
+        <h3>Отзывчивая поддержка</h3>
+        <p>Быстро отвечаем на вопросы и помогаем с любыми проблемами</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">
+          <svg viewBox="0 0 16 16" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="0" width="8" height="2" fill="#7a7a7a"/>
+            <rect x="2" y="2" width="12" height="10" fill="#9a9a9a"/>
+            <rect x="4" y="4" width="8" height="2" fill="#c0c0c0"/>
+            <rect x="6" y="6" width="4" height="4" fill="#7a7a7a"/>
+            <rect x="7" y="7" width="2" height="2" fill="#555"/>
+            <rect x="2" y="12" width="12" height="2" fill="#7a7a7a"/>
+            <rect x="4" y="14" width="8" height="2" fill="#555"/>
+          </svg>
+        </span>
+        <h3>Честная модерация</h3>
+        <p>Справедливые правила, без фаворитизма. Только честная игра</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">
+          <svg viewBox="0 0 16 16" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="8" width="16" height="8" fill="#5d8a3c"/>
+            <rect x="2" y="5" width="2" height="4" fill="#3d6b22"/>
+            <rect x="1" y="4" width="4" height="2" fill="#3d6b22"/>
+            <rect x="7" y="4" width="2" height="5" fill="#3d6b22"/>
+            <rect x="6" y="3" width="4" height="2" fill="#3d6b22"/>
+            <rect x="12" y="6" width="2" height="3" fill="#3d6b22"/>
+            <rect x="11" y="5" width="4" height="2" fill="#3d6b22"/>
+          </svg>
+        </span>
+        <h3>Лёгкое выживание</h3>
+        <p>Удобный старт, дружелюбная среда для новых игроков</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="pixel-divider">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- DONATE -->
+  <section id="donate">
+    <div class="section-header">
+      <svg class="block-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="0" width="8" height="2" fill="#4fc3f7"/>
+        <rect x="2" y="2" width="12" height="2" fill="#4fc3f7"/>
+        <rect x="1" y="4" width="14" height="2" fill="#81d4fa"/>
+        <rect x="0" y="6" width="16" height="4" fill="#81d4fa"/>
+        <rect x="1" y="10" width="14" height="2" fill="#4fc3f7"/>
+        <rect x="2" y="12" width="12" height="2" fill="#4fc3f7"/>
+        <rect x="4" y="14" width="8" height="2" fill="#0288d1"/>
+      </svg>
+      <div class="section-title">Донат-привилегии</div>
+    </div>
+
+    <div class="donate-grid">
+
+      <!-- HUNTER -->
+      <div class="donate-card hunter">
+        <div class="donate-rank">
+          <svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="7" width="12" height="2" fill="#8b5e3c"/><rect x="12" y="6" width="2" height="4" fill="#c8a060"/><rect x="14" y="4" width="2" height="8" fill="#8b5e3c"/><rect x="10" y="2" width="2" height="2" fill="#c8a060"/><rect x="10" y="12" width="2" height="2" fill="#c8a060"/><rect x="11" y="4" width="1" height="8" fill="#c8a060" opacity="0.4"/></svg>
+          Hunter</div>
+        <div class="donate-price">39 ₽</div>
+        <ul class="donate-perks">
+          <li><span class="cmd">/kit hunter</span></li>
+          <li><span class="cmd">/feed</span> — восстановить голод</li>
+          <li><span class="cmd">/wb</span> — открытие верстака</li>
+          <li>Префикс <span class="highlight">[Hunter]</span></li>
+          <li>2 точки дома</li>
+          <li>3 слота на аукционе</li>
+        </ul>
+        <a href="https://t.me/n8namer" class="btn-donate" target="_blank">Купить →</a>
+      </div>
+
+      <!-- MINER -->
+      <div class="donate-card miner">
+        <div class="best-value">POPULAR</div>
+        <div class="donate-rank">
+          <svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="12" width="2" height="2" fill="#8b5e3c"/><rect x="2" y="10" width="2" height="2" fill="#8b5e3c"/><rect x="4" y="8" width="2" height="2" fill="#8b5e3c"/><rect x="6" y="6" width="2" height="2" fill="#8b5e3c"/><rect x="8" y="4" width="2" height="2" fill="#9a9a9a"/><rect x="10" y="2" width="2" height="2" fill="#9a9a9a"/><rect x="12" y="0" width="4" height="4" fill="#7a7a7a"/><rect x="8" y="2" width="4" height="2" fill="#bbb"/></svg>
+          Miner</div>
+        <div class="donate-price">89 ₽</div>
+        <div class="inherited-note">+ все привилегии Hunter</div>
+        <ul class="donate-perks">
+          <li><span class="cmd">/kit miner</span></li>
+          <li><span class="cmd">/heal</span> — восстановить здоровье</li>
+          <li><span class="cmd">/ec</span> — открытие эндер-сундука</li>
+          <li>Префикс <span class="blue">[Miner]</span></li>
+          <li>3 точки дома</li>
+          <li>5 слотов на аукционе</li>
+        </ul>
+        <a href="https://t.me/n8namer" class="btn-donate" target="_blank">Купить →</a>
+      </div>
+
+      <!-- GRIEFER -->
+      <div class="donate-card griefer">
+        <div class="donate-rank">
+          <svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect width="16" height="16" fill="#ef5350"/><rect x="0" y="0" width="4" height="4" fill="#fff"/><rect x="12" y="0" width="4" height="4" fill="#fff"/><rect x="0" y="12" width="4" height="4" fill="#fff"/><rect x="12" y="12" width="4" height="4" fill="#fff"/><rect x="4" y="4" width="8" height="8" fill="#c62828"/><rect x="5" y="1" width="6" height="2" fill="#c62828"/><rect x="7" y="0" width="2" height="1" fill="#f5c518"/></svg>
+          Griefer</div>
+        <div class="donate-price">149 ₽</div>
+        <div class="inherited-note">+ все привилегии Miner</div>
+        <ul class="donate-perks">
+          <li><span class="cmd">/kit griefer</span></li>
+          <li><span class="cmd">/gift</span> — подарок игрокам</li>
+          <li>Префикс <span class="red">[Griefer]</span></li>
+          <li>4 точки дома</li>
+          <li>7 слотов на аукционе</li>
+        </ul>
+        <a href="https://t.me/n8namer" class="btn-donate" target="_blank">Купить →</a>
+      </div>
+
+    </div>
+
+    <!-- YOUTUBER SPECIAL -->
+    <div class="donate-card youtuber" style="max-width: 100%; margin-top: 4px;">
+      <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+        <div style="flex: 1; min-width: 220px;">
+          <div class="donate-rank">
+            <svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="3" width="10" height="10" fill="#c62828"/><rect x="10" y="5" width="6" height="6" fill="#ef5350"/><rect x="2" y="5" width="4" height="6" fill="#ffcdd2" opacity="0.3"/><rect x="4" y="6" width="2" height="4" fill="#fff" opacity="0.8"/></svg>
+            YouTuber</div>
+          <div class="donate-price" style="font-size: 16px; color: var(--gold);">БЕСПЛАТНО · по заявке</div>
+          <ul class="donate-perks" style="margin-top: 12px;">
+            <li><span class="cmd">/wb</span> <span class="cmd">/ec</span> — верстак и эндер-сундук</li>
+            <li><span class="cmd">/kit youtuber</span></li>
+            <li>Уникальный префикс <span class="highlight">[YouTube]</span></li>
+          </ul>
+        </div>
+        <div style="flex: 2; min-width: 220px;">
+          <p style="font-size: 17px; color: #c0c0c0; line-height: 1.6; margin-bottom: 16px;">
+            Требования: <span class="highlight">5 видео</span> о сервере (без негатива),
+            <span class="highlight">от 100 подписчиков</span>, стабильная активность на канале.
+          </p>
+          <a href="https://t.me/n8namer" class="btn-donate" style="display: inline-block; width: auto; padding: 12px 28px;" target="_blank">
+            Подать заявку в TG →
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="pixel-divider">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- SECURITY -->
+  <section id="security">
+    <div class="section-header">
+      <svg class="block-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="0" width="10" height="2" fill="#ef5350"/>
+        <rect x="1" y="2" width="14" height="12" fill="#c62828"/>
+        <rect x="3" y="4" width="10" height="2" fill="#ef9a9a"/>
+        <rect x="5" y="6" width="6" height="6" fill="#ffcdd2"/>
+        <rect x="6" y="7" width="4" height="4" fill="#c62828"/>
+      </svg>
+      <div class="section-title">Защита и правила</div>
+    </div>
+
+    <div class="rules-grid">
+      <div class="rule-card">
+        <span class="rule-icon">
+          <svg viewBox="0 0 16 16" width="28" height="28" xmlns="http://www.w3.org/2000/svg"><rect width="16" height="16" fill="#4a4a4a"/><rect x="2" y="2" width="12" height="6" fill="#7a7a7a"/><rect x="4" y="3" width="4" height="4" fill="#aaa"/><rect x="2" y="9" width="12" height="5" fill="#5a5a5a"/><rect x="4" y="10" width="8" height="3" fill="#333"/><rect x="5" y="11" width="6" height="1" fill="#888"/></svg>
+        </span>
+        <h3>Резервные копии</h3>
+        <p>Регулярные бэкапы сервера. Даже если произойдёт краш или попытка взлома — данные восстановятся</p>
+      </div>
+      <div class="rule-card">
+        <span class="rule-icon">
+          <svg viewBox="0 0 16 16" width="28" height="28" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="0" width="10" height="2" fill="#5d8a3c"/><rect x="1" y="2" width="14" height="8" fill="#3d6b22"/><rect x="2" y="10" width="12" height="2" fill="#3d6b22"/><rect x="4" y="12" width="8" height="2" fill="#5d8a3c"/><rect x="6" y="14" width="4" height="2" fill="#3d6b22"/><rect x="5" y="4" width="6" height="2" fill="#8bc34a"/><rect x="7" y="6" width="2" height="4" fill="#8bc34a"/></svg>
+        </span>
+        <h3>Защита от лагов</h3>
+        <p>Жёсткие ограничения на лаг-машины и эксплойты. Стабильная работа для всех игроков</p>
+      </div>
+      <div class="rule-card">
+        <span class="rule-icon">
+          <svg viewBox="0 0 16 16" width="28" height="28" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="10" width="2" height="2" fill="#8b5e3c"/><rect x="2" y="8" width="2" height="2" fill="#8b5e3c"/><rect x="4" y="6" width="2" height="2" fill="#8b5e3c"/><rect x="6" y="4" width="4" height="4" fill="#9a9a9a"/><rect x="10" y="2" width="4" height="4" fill="#7a7a7a"/><rect x="8" y="2" width="4" height="2" fill="#bbb"/><rect x="6" y="6" width="2" height="2" fill="#bbb" opacity="0.4"/></svg>
+        </span>
+        <h3>Взлом / краш</h3>
+        <p>Попытка сломать сервер = <span class="red">бан аккаунта + бан по IP</span>. Без предупреждений</p>
+      </div>
+      <div class="rule-card green">
+        <span class="rule-icon">
+          <svg viewBox="0 0 16 16" width="28" height="28" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="0" width="4" height="2" fill="#f5c518"/><rect x="4" y="2" width="8" height="2" fill="#f5c518"/><rect x="2" y="4" width="12" height="2" fill="#f5c518"/><rect x="0" y="6" width="16" height="2" fill="#f5c518"/><rect x="0" y="8" width="16" height="4" fill="#f5c518"/><rect x="2" y="12" width="12" height="2" fill="#f5c518"/><rect x="7" y="4" width="2" height="5" fill="#1a1a1a"/><rect x="7" y="10" width="2" height="2" fill="#1a1a1a"/></svg>
+        </span>
+        <h3>Гриф и оскорбления</h3>
+        <p>За гриф и оскорбления — <span class="red">бан 7 дней</span>. Уважайте друг друга и чужие постройки</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="pixel-divider">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- CONTACTS -->
+  <section id="contacts">
+    <div class="section-header">
+      <svg class="block-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <rect width="16" height="16" fill="#1976d2"/>
+        <rect x="2" y="3" width="12" height="1" fill="#90caf9"/>
+        <rect x="2" y="5" width="8" height="1" fill="#90caf9"/>
+        <rect x="2" y="9" width="12" height="1" fill="#90caf9"/>
+        <rect x="2" y="11" width="6" height="1" fill="#90caf9"/>
+      </svg>
+      <div class="section-title">Контакты и поддержка</div>
+    </div>
+
+    <div class="contact-bar">
+      <a href="https://t.me/vanillahouse_mpv" class="contact-btn tg" target="_blank">
+        <svg style="width:14px;height:14px;vertical-align:middle;margin-right:6px;" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect width="16" height="16" fill="#1976d2" rx="3"/><rect x="2" y="4" width="12" height="1" fill="#90caf9"/><rect x="2" y="6" width="8" height="1" fill="#90caf9"/><rect x="2" y="10" width="12" height="1" fill="#90caf9"/><rect x="2" y="12" width="6" height="1" fill="#90caf9"/></svg>
+        TG Канал @vanillahouse_mpv
+      </a>
+      <a href="https://t.me/n8namer" class="contact-btn support" target="_blank">
+        <svg style="width:14px;height:14px;vertical-align:middle;margin-right:6px;" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="2" width="14" height="10" fill="#5d8a3c"/><rect x="2" y="3" width="12" height="8" fill="#3d6b22"/><rect x="3" y="5" width="10" height="1" fill="#8bc34a"/><rect x="3" y="7" width="7" height="1" fill="#8bc34a"/><rect x="1" y="12" width="4" height="3" fill="#5d8a3c"/></svg>
+        Поддержка @n8namer
+      </a>
+    </div>
+
+    <div style="margin-top: 16px; padding: 20px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.07);">
+      <p style="font-size: 18px; color: #888; text-align: center; line-height: 1.7;">
+        По вопросам доната, жалобам и предложениям — пишите в личные сообщения
+        <a href="https://t.me/n8namer" style="color: var(--diamond); text-decoration: none;">@n8namer</a>.
+        Новости и обновления сервера в канале
+        <a href="https://t.me/vanillahouse_mpv" style="color: var(--diamond); text-decoration: none;">@vanillahouse_mpv</a>.
+      </p>
+    </div>
+  </section>
+
+  <div class="footer-text">
+    <p style="font-family: 'Press Start 2P', monospace; font-size: 8px; color: #333; margin-top: 30px;">
+      © VanillaHouse · Vanilla Survival Server
+    </p>
+  </div>
+
+</main>
+
+<!-- Ground -->
+<div class="ground" id="ground"></div>
+<script>
+  const g = document.getElementById('ground');
+  for (let i = 0; i < 60; i++) {
+    const b = document.createElement('div');
+    b.className = 'ground-block';
+    g.appendChild(b);
+  }
+</script>
+
+<!-- Toast -->
+<div id="toast">IP скопирован!</div>
+
+<script>
+  function copyIP() {
+    const ip = document.getElementById('ip-text').textContent;
+    navigator.clipboard.writeText(ip).catch(() => {});
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+</script>
+
+</body>
+</html>
