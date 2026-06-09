@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VanillaHouse — Minecraft Server</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet">
 <style>
-@import
-url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&di
-splay=swap');
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
 --grass: #5d8a3c;
@@ -42,7 +42,7 @@ background: url('back.png') center center / cover no-repeat;
 overflow: hidden;
 }
 
-#sky-bg::after {
+#sky-bg::after {
 content: '';
 position: absolute;
 inset: 0;
@@ -84,7 +84,7 @@ position: relative;
 }
 .ground-block::after {
 
-content: '';
+content: '';
 position: absolute;
 bottom: 0;
 left: 0;
@@ -127,8 +127,7 @@ margin-bottom: 32px;
 @keyframes pulse {
 0%, 100% { text-shadow: 3px 3px 0 #7a5a00, -1px -1px 0 #b08000; }
 
-50% { text-shadow: 3px 3px 0 #7a5a00, -1px -1px 0 #b08000, 0 0 20px
-rgba(245,197,24,0.4); }
+50% { text-shadow: 3px 3px 0 #7a5a00, -1px -1px 0 #b08000, 0 0 20px rgba(245,197,24,0.4); }
 }
 .ip-box {
 display: inline-flex;
@@ -170,7 +169,7 @@ flex-shrink: 0;
 image-rendering: pixelated;
 }
 
-.section-title {
+.section-title {
 font-family: 'Press Start 2P', monospace;
 font-size: clamp(11px, 2.5vw, 16px);
 color: var(--gold);
@@ -213,7 +212,7 @@ font-size: clamp(16px, 3vw, 20px);
 line-height: 1.6;
 color: #c8c8c8;
 
-}
+}
 .card ul { padding-left: 20px; }
 .card li { margin-bottom: 4px; }
 .highlight { color: var(--gold); font-weight: bold; }
@@ -254,7 +253,7 @@ line-height: 1.5;
 font-size: clamp(14px, 3vw, 18px);
 color: #b0b0b0;
 
-line-height: 1.5;
+line-height: 1.5;
 }
 /* ====== DONATE CARDS ====== */
 .donate-grid {
@@ -295,7 +294,7 @@ top: -13px;
 left: 50%;
 transform: translateX(-50%);
 
-background: var(--miner);
+background: var(--miner);
 color: #000;
 font-family: 'Press Start 2P', monospace;
 font-size: 7px;
@@ -337,7 +336,7 @@ flex-shrink: 0;
 margin-top: 2px;
 }
 
-.donate-card.hunter .donate-perks li::before { color: var(--hunter); }
+.donate-card.hunter .donate-perks li::before { color: var(--hunter); }
 .donate-card.miner .donate-perks li::before { color: var(--miner); }
 .donate-card.griefer .donate-perks li::before { color: var(--griefer); }
 .donate-card.youtuber .donate-perks li::before { color: var(--gold); }
@@ -381,7 +380,7 @@ color: #000;
 .donate-card.miner .btn-donate {
 color: var(--miner);
 
-border-color: var(--miner);
+border-color: var(--miner);
 }
 .donate-card.miner .btn-donate:hover {
 background: var(--miner);
@@ -423,7 +422,7 @@ margin-bottom: 10px;
 display: block;
 }
 
-.rule-card h3 {
+.rule-card h3 {
 font-family: 'Press Start 2P', monospace;
 font-size: clamp(7px, 1.5vw, 10px);
 color: var(--gold);
@@ -467,7 +466,7 @@ background: var(--diamond);
 color: #000;
 }
 
-.contact-btn.support {
+.contact-btn.support {
 color: var(--grass);
 border-color: var(--grass);
 }
@@ -510,7 +509,7 @@ color: var(--gold);
 background: rgba(255,255,255,0.04);
 }
 
-/* ====== DIVIDER ====== */
+/* ====== DIVIDER ====== */
 .pixel-divider {
 display: flex;
 height: 8px;
@@ -554,7 +553,7 @@ bottom: 70px;
 left: 50%;
 transform: translateX(-50%) translateY(20px);
 
-background: var(--grass-dark);
+background: var(--grass-dark);
 color: white;
 padding: 10px 24px;
 font-family: 'Press Start 2P', monospace;
@@ -601,7 +600,7 @@ bg.appendChild(b);
 
 <nav>
 
-<a href="#about">
+<a href="#about">
 <svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" viewBox="0 0
 16 16" xmlns="http://www.w3.org/2000/svg"><rect width="8" height="4" x="4"
 fill="#8b5e3c"/><rect width="2" height="8" x="3" y="4" fill="#8b5e3c"/><rect width="10"
@@ -648,7 +647,7 @@ xmlns="http://www.w3.org/2000/svg"><rect x="3" y="0" width="10" height="1"
 fill="#888"/><rect x="2" y="1" width="12" height="1" fill="#888"/><rect x="1" y="2" width="14"
 height="10" fill="#666"/><rect x="2" y="3" width="12" height="8" fill="#888"/><rect x="3"
 
-y="4" width="10" height="1" fill="#aaa"/><rect x="3" y="6" width="8" height="1"
+y="4" width="10" height="1" fill="#aaa"/><rect x="3" y="6" width="8" height="1"
 fill="#aaa"/><rect x="3" y="8" width="10" height="1" fill="#aaa"/></svg>
 </span>
 </div>
@@ -695,7 +694,7 @@ xmlns="http://www.w3.org/2000/svg">
 <rect x="7" y="7" width="2" height="2" fill="#555"/>
 <rect x="2" y="12" width="12" height="2" fill="#7a7a7a"/>
 
-<rect x="4" y="14" width="8" height="2" fill="#555"/>
+<rect x="4" y="14" width="8" height="2" fill="#555"/>
 </svg>
 </span>
 <h3>Честная модерация</h3>
@@ -741,7 +740,7 @@ xmlns="http://www.w3.org/2000/svg">
 </div>
 <div class="donate-grid">
 
-<!-- HUNTER -->
+<!-- HUNTER -->
 <div class="donate-card hunter">
 <div class="donate-rank">
 <svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"
@@ -787,7 +786,7 @@ Miner</div>
 <a href="https://t.me/n8namer" class="btn-donate" target="_blank">Купить →</a>
 </div>
 
-<!-- GRIEFER -->
+<!-- GRIEFER -->
 <div class="donate-card griefer">
 <div class="donate-rank">
 <svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"
@@ -821,11 +820,9 @@ height="10" fill="#c62828"/><rect x="10" y="5" width="6" height="6" fill="#ef535
 x="2" y="5" width="4" height="6" fill="#ffcdd2" opacity="0.3"/><rect x="4" y="6" width="2"
 height="4" fill="#fff" opacity="0.8"/></svg>
 YouTuber</div>
-<div class="donate-price" style="font-size: 16px; color: var(--gold);">БЕСПЛАТНО · по
-заявке</div>
+<div class="donate-price" style="font-size: 16px; color: var(--gold);">БЕСПЛАТНО · по заявке</div>
 <ul class="donate-perks" style="margin-top: 12px;">
-<li><span class="cmd">/wb</span> <span class="cmd">/ec</span> — верстак и
-эндер-сундук</li>
+<li><span class="cmd">/wb</span> <span class="cmd">/ec</span> — верстак и эндер-сундук</li>
 <li><span class="cmd">/kit youtuber</span></li>
 <li>Уникальный префикс <span class="highlight">[YouTube]</span></li>
 </ul>
@@ -834,11 +831,9 @@ YouTuber</div>
 <p style="font-size: 17px; color: #c0c0c0; line-height: 1.6; margin-bottom: 16px;">
 Требования: <span class="highlight">5 видео</span> о сервере (без негатива),
 
-<span class="highlight">от 100 подписчиков</span>, стабильная активность на
-канале.
+<span class="highlight">от 100 подписчиков</span>, стабильная активность на канале.
 </p>
-<a href="https://t.me/n8namer" class="btn-donate" style="display: inline-block; width:
-auto; padding: 12px 28px;" target="_blank">
+<a href="https://t.me/n8namer" class="btn-donate" style="display: inline-block; width: auto; padding: 12px 28px;" target="_blank">
 Подать заявку в TG →
 </a>
 </div>
@@ -879,7 +874,7 @@ width="8" height="3" fill="#333"/><rect x="5" y="11" width="6" height="1" fill="
 <div class="rule-card">
 <span class="rule-icon">
 
-<svg viewBox="0 0 16 16" width="28" height="28"
+<svg viewBox="0 0 16 16" width="28" height="28"
 xmlns="http://www.w3.org/2000/svg"><rect x="3" y="0" width="10" height="2"
 fill="#5d8a3c"/><rect x="1" y="2" width="14" height="8" fill="#3d6b22"/><rect x="2" y="10"
 width="12" height="2" fill="#3d6b22"/><rect x="4" y="12" width="8" height="2"
@@ -943,7 +938,7 @@ fill="#1a1a1a"/><rect x="7" y="10" width="2" height="2" fill="#1a1a1a"/></svg>
 <span></span><span></span><span></span><span></span><span></span>
 <span></span><span></span><span></span><span></span><span></span>
 
-</div>
+</div>
 <!-- CONTACTS -->
 <section id="contacts">
 <div class="section-header">
@@ -974,22 +969,18 @@ fill="#8bc34a"/><rect x="1" y="12" width="4" height="3" fill="#5d8a3c"/></svg>
 Поддержка @n8namer
 </a>
 </div>
-<div style="margin-top: 16px; padding: 20px; background: rgba(0,0,0,0.4); border: 1px
-solid rgba(255,255,255,0.07);">
+<div style="margin-top: 16px; padding: 20px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.07);">
 <p style="font-size: 18px; color: #888; text-align: center; line-height: 1.7;">
 По вопросам доната, жалобам и предложениям — пишите в личные сообщения
-<a href="https://t.me/n8namer" style="color: var(--diamond); text-decoration:
-none;">@n8namer</a>.
+<a href="https://t.me/n8namer" style="color: var(--diamond); text-decoration: none;">@n8namer</a>.
 Новости и обновления сервера в канале
-<a href="https://t.me/vanillahouse_mpv" style="color: var(--diamond); text-decoration:
-none;">@vanillahouse_mpv</a>.
+<a href="https://t.me/vanillahouse_mpv" style="color: var(--diamond); text-decoration: none;">@vanillahouse_mpv</a>.
 </p>
 </div>
 </section>
 <div class="footer-text">
 
-<p style="font-family: 'Press Start 2P', monospace; font-size: 8px; color: #333; margin-top:
-30px;">
+<p style="font-family: 'Press Start 2P', monospace; font-size: 8px; color: #333; margin-top: 30px;">
 © VanillaHouse · Vanilla Survival Server
 </p>
 </div>
@@ -1017,3 +1008,4 @@ setTimeout(() => t.classList.remove('show'), 2000);
 </script>
 </body>
 </html>
+
