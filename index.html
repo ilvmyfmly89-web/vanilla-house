@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ru">
-<head>
+<html lang="ru"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VanillaHouse — Minecraft Server</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="VanillaHouse%20%E2%80%94%20Minecraft%20Server_files/css2_1i54.css" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -21,9 +21,9 @@
 --night: #0a0f1e;
 --gold: #f5c518;
 --diamond: #4fc3f7;
---hunter: #8bc34a;
---miner: #90caf9;
---griefer: #ef5350;
+--hunter: #4fc3f7;
+--miner: #ff9800;
+--griefer: #f06292;
 --pixel: 4px;
 }
 html { scroll-behavior: smooth; }
@@ -38,60 +38,14 @@ overflow-x: hidden;
 position: fixed;
 inset: 0;
 z-index: 0;
-background: url('back.png') center center / cover no-repeat;
+background: url('p4.png') center center / cover no-repeat;
 overflow: hidden;
 }
-
 #sky-bg::after {
 content: '';
 position: absolute;
 inset: 0;
 background: rgba(0, 0, 0, 0.45);
-}
-.stars { display: none; }
-/* Floating blocks */
-.float-block {
-position: absolute;
-width: 40px;
-height: 40px;
-image-rendering: pixelated;
-animation: floatUp 20s linear infinite;
-opacity: 0.15;
-}
-@keyframes floatUp {
-0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-10% { opacity: 0.15; }
-90% { opacity: 0.15; }
-100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
-}
-/* Ground strip */
-.ground {
-position: fixed;
-bottom: 0;
-left: 0;
-right: 0;
-height: 48px;
-z-index: 1;
-display: flex;
-}
-.ground-block {
-flex: 1;
-height: 100%;
-background: var(--grass);
-border-top: 4px solid var(--grass-dark);
-border-right: 2px solid rgba(0,0,0,0.3);
-position: relative;
-}
-.ground-block::after {
-
-content: '';
-position: absolute;
-bottom: 0;
-left: 0;
-right: 0;
-height: 28px;
-background: var(--dirt);
-border-top: 3px solid var(--dirt-dark);
 }
 /* ====== LAYOUT ====== */
 main {
@@ -99,7 +53,7 @@ position: relative;
 z-index: 2;
 max-width: 900px;
 margin: 0 auto;
-padding: 0 16px 100px;
+padding: 0 16px 60px;
 }
 /* ====== HEADER ====== */
 .hero {
@@ -154,6 +108,46 @@ margin-top: 8px;
 display: block;
 font-family: 'VT323', monospace;
 font-size: 16px;
+}
+.status-badge {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+margin-bottom: 16px;
+font-family: 'Press Start 2P', monospace;
+font-size: clamp(8px, 1.8vw, 11px);
+color: var(--hunter);
+}
+.status-dot {
+width: 9px;
+height: 9px;
+background: var(--hunter);
+box-shadow: 0 0 8px var(--hunter);
+animation: blink 1.6s ease-in-out infinite;
+}
+@keyframes blink {
+0%, 100% { opacity: 1; }
+50% { opacity: 0.35; }
+}
+/* ====== GALLERY ====== */
+.gallery-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+gap: 16px;
+margin-bottom: 16px;
+}
+.gallery-grid img {
+width: 100%;
+height: 200px;
+object-fit: cover;
+display: block;
+border: 2px solid var(--stone-dark);
+image-rendering: pixelated;
+transition: border-color 0.2s, transform 0.2s;
+}
+.gallery-grid img:hover {
+border-color: var(--gold);
+transform: translateY(-4px);
 }
 /* ====== PIXEL BLOCK SECTION HEADER ====== */
 .section-header {
@@ -576,142 +570,76 @@ transform: translateX(-50%) translateY(0);
 </style>
 </head>
 <body>
-<div id="sky-bg">
-<div class="stars"></div>
-</div>
-<!-- Animated floating blocks -->
-<script>
-const colors = ['#5d8a3c','#8b5e3c','#7a7a7a','#f5c518','#4fc3f7'];
-const symbols = ['▪','◼',' ','▫','◻'];
-const bg = document.getElementById('sky-bg');
-for (let i = 0; i < 18; i++) {
-const b = document.createElement('div');
-b.className = 'float-block';
-b.style.left = Math.random() * 100 + 'vw';
-b.style.animationDelay = (Math.random() * 20) + 's';
-b.style.animationDuration = (15 + Math.random() * 20) + 's';
-b.style.background = colors[Math.floor(Math.random() * colors.length)];
-b.style.width = b.style.height = (20 + Math.random() * 30) + 'px';
-bg.appendChild(b);
-}
-</script>
-
-◾
-
+<div id="sky-bg"></div>
 <nav>
 
 <a href="#about">
-<svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" viewBox="0 0
-16 16" xmlns="http://www.w3.org/2000/svg"><rect width="8" height="4" x="4"
-fill="#8b5e3c"/><rect width="2" height="8" x="3" y="4" fill="#8b5e3c"/><rect width="10"
-height="2" x="3" y="8" fill="#8b5e3c"/><rect width="2" height="2" x="7" y="4"
-fill="#6b3e1c"/></svg>
+<svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
 О сервере</a>
+<a href="#gallery">Галерея</a>
 <a href="#donate">
-<svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" viewBox="0 0
-16 16" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="0" width="8" height="2"
-fill="#4fc3f7"/><rect x="2" y="2" width="12" height="2" fill="#4fc3f7"/><rect x="1" y="4"
-width="14" height="2" fill="#81d4fa"/><rect x="0" y="6" width="16" height="4"
-fill="#81d4fa"/><rect x="1" y="10" width="14" height="2" fill="#4fc3f7"/><rect x="2" y="12"
-width="12" height="2" fill="#4fc3f7"/><rect x="4" y="14" width="8" height="2"
-fill="#0288d1"/></svg>
+<svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polygon points="12 2 21 8.5 18 22 6 22 3 8.5"/><path d="M3 8.5h18M9 8.5 12 22M15 8.5 12 22M8 2l4 6.5M16 2l-4 6.5"/></svg>
 Донат</a>
 <a href="#security">
-<svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" viewBox="0 0
-16 16" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="0" width="10" height="2"
-fill="#ef5350"/><rect x="1" y="2" width="14" height="12" fill="#c62828"/><rect x="3" y="4"
-width="10" height="2" fill="#ef9a9a"/><rect x="5" y="6" width="6" height="6"
-fill="#ffcdd2"/><rect x="6" y="7" width="4" height="4" fill="#c62828"/></svg>
+<svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg>
 Защита</a>
 <a href="#contacts">
-<svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" viewBox="0 0
-16 16" xmlns="http://www.w3.org/2000/svg"><rect width="16" height="16"
-fill="#1976d2"/><rect x="2" y="3" width="12" height="1" fill="#90caf9"/><rect x="2" y="5"
-width="8" height="1" fill="#90caf9"/><rect x="2" y="9" width="12" height="1"
-fill="#90caf9"/><rect x="2" y="11" width="6" height="1" fill="#90caf9"/></svg>
+<svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 4h16v12H8l-4 4V4z"/></svg>
 Контакты</a>
 </nav>
 <main>
 <!-- HERO -->
 <section class="hero">
 <div class="hero-logo">VanillaHouse</div>
-<div class="hero-sub">Vanilla Survival · Griefing · Pure Minecraft</div>
-<div class="hero-sub" style="font-size: clamp(7px, 1.5vw, 11px); color: #4fc3f7; margin-bottom: 0; margin-top: -20px;">Версия 1.21.11</div>
-<div style="margin-top: 24px;">
+<div class="hero-sub">Vanilla Survival · Дружелюбное комьюнити · Pure Minecraft</div>
+<div class="hero-sub" style="font-size: clamp(7px, 1.5vw, 11px); color: rgb(79, 195, 247); margin-bottom: 0px; margin-top: -20px;">Версия 1.21.11</div>
+<div class="status-badge" style="margin-top: 24px;">
+<span class="status-dot"></span>
+СЕРВЕР ОНЛАЙН
+</div>
+<div style="margin-top: 8px;">
 <div class="ip-box" onclick="copyIP()" title="Нажми чтобы скопировать">
-<span style="color: #666; font-size: 10px;">IP:</span>
+<span style="color: rgb(102, 102, 102); font-size: 10px;">IP:</span>
 <span id="ip-text">today.vanilla.house</span>
-<span style="color: #555; font-size: 10px;">
-<svg style="width:12px;height:12px;vertical-align:middle;" viewBox="0 0 16 16"
-xmlns="http://www.w3.org/2000/svg"><rect x="3" y="0" width="10" height="1"
-fill="#888"/><rect x="2" y="1" width="12" height="1" fill="#888"/><rect x="1" y="2" width="14"
-height="10" fill="#666"/><rect x="2" y="3" width="12" height="8" fill="#888"/><rect x="3"
-
-y="4" width="10" height="1" fill="#aaa"/><rect x="3" y="6" width="8" height="1"
-fill="#aaa"/><rect x="3" y="8" width="10" height="1" fill="#aaa"/></svg>
+<span style="color: rgb(85, 85, 85); font-size: 10px;">
+<svg style="width:12px;height:12px;vertical-align:middle;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/></svg>
 </span>
 </div>
 <span class="copy-hint">[ нажми чтобы скопировать ]</span>
 </div>
 </section>
+<!-- GALLERY -->
+<section id="gallery">
+<div class="gallery-grid">
+<img src="1p.png" alt="Скриншот сервера VanillaHouse 1" loading="lazy">
+<img src="2p.png" alt="Скриншот сервера VanillaHouse 2" loading="lazy">
+<img src="3p.png" alt="Скриншот сервера VanillaHouse 3" loading="lazy">
+</div>
+</section>
 <!-- ABOUT -->
 <section id="about">
 <div class="section-header">
-<svg class="block-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-<rect width="16" height="16" fill="#5d8a3c"/>
-<rect y="4" width="16" height="12" fill="#8b5e3c"/>
-<rect x="2" y="1" width="3" height="2" fill="#3d6b22"/>
-<rect x="8" y="0" width="4" height="3" fill="#3d6b22"/>
-<rect x="5" y="2" width="2" height="1" fill="#3d6b22"/>
-</svg>
+<svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--grass)" xmlns="http://www.w3.org/2000/svg"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
 <div class="section-title">О сервере</div>
 </div>
 <div class="features-grid">
 <div class="feature-card">
 <span class="feature-icon">
-<svg viewBox="0 0 16 16" width="32" height="32"
-xmlns="http://www.w3.org/2000/svg">
-<rect x="6" y="0" width="4" height="2" fill="#ffcc00"/>
-<rect x="4" y="2" width="8" height="2" fill="#ffcc00"/>
-<rect x="2" y="4" width="12" height="2" fill="#f5c518"/>
-<rect x="2" y="6" width="5" height="4" fill="#f5c518"/>
-<rect x="9" y="6" width="5" height="4" fill="#f5c518"/>
-<rect x="4" y="10" width="8" height="2" fill="#ffcc00"/>
-<rect x="6" y="12" width="4" height="2" fill="#cc9900"/>
-</svg>
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gold)" xmlns="http://www.w3.org/2000/svg"><path d="M4 17v-5a8 8 0 0 1 16 0v5"/><rect x="2" y="15" width="4" height="6" rx="1.5"/><rect x="18" y="15" width="4" height="6" rx="1.5"/></svg>
 </span>
 <h3>Отзывчивая поддержка</h3>
 <p>Быстро отвечаем на вопросы и помогаем с любыми проблемами</p>
 </div>
 <div class="feature-card">
 <span class="feature-icon">
-<svg viewBox="0 0 16 16" width="32" height="32"
-xmlns="http://www.w3.org/2000/svg">
-<rect x="4" y="0" width="8" height="2" fill="#7a7a7a"/>
-<rect x="2" y="2" width="12" height="10" fill="#9a9a9a"/>
-<rect x="4" y="4" width="8" height="2" fill="#c0c0c0"/>
-<rect x="6" y="6" width="4" height="4" fill="#7a7a7a"/>
-<rect x="7" y="7" width="2" height="2" fill="#555"/>
-<rect x="2" y="12" width="12" height="2" fill="#7a7a7a"/>
-
-<rect x="4" y="14" width="8" height="2" fill="#555"/>
-</svg>
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#c0c0c0" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
 </span>
 <h3>Честная модерация</h3>
 <p>Справедливые правила, без фаворитизма. Только честная игра</p>
 </div>
 <div class="feature-card">
 <span class="feature-icon">
-<svg viewBox="0 0 16 16" width="32" height="32"
-xmlns="http://www.w3.org/2000/svg">
-<rect x="0" y="8" width="16" height="8" fill="#5d8a3c"/>
-<rect x="2" y="5" width="2" height="4" fill="#3d6b22"/>
-<rect x="1" y="4" width="4" height="2" fill="#3d6b22"/>
-<rect x="7" y="4" width="2" height="5" fill="#3d6b22"/>
-<rect x="6" y="3" width="4" height="2" fill="#3d6b22"/>
-<rect x="12" y="6" width="2" height="3" fill="#3d6b22"/>
-<rect x="11" y="5" width="4" height="2" fill="#3d6b22"/>
-</svg>
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--grass)" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
 </span>
 <h3>Лёгкое выживание</h3>
 <p>Удобный старт, дружелюбная среда для новых игроков</p>
@@ -727,28 +655,16 @@ xmlns="http://www.w3.org/2000/svg">
 <!-- DONATE -->
 <section id="donate">
 <div class="section-header">
-<svg class="block-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-<rect x="4" y="0" width="8" height="2" fill="#4fc3f7"/>
-<rect x="2" y="2" width="12" height="2" fill="#4fc3f7"/>
-<rect x="1" y="4" width="14" height="2" fill="#81d4fa"/>
-<rect x="0" y="6" width="16" height="4" fill="#81d4fa"/>
-<rect x="1" y="10" width="14" height="2" fill="#4fc3f7"/>
-<rect x="2" y="12" width="12" height="2" fill="#4fc3f7"/>
-<rect x="4" y="14" width="8" height="2" fill="#0288d1"/>
-</svg>
+<svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--diamond)" xmlns="http://www.w3.org/2000/svg"><polygon points="12 2 21 8.5 18 22 6 22 3 8.5"/><path d="M3 8.5h18M9 8.5 12 22M15 8.5 12 22M8 2l4 6.5M16 2l-4 6.5"/></svg>
 <div class="section-title">Донат-привилегии</div>
 </div>
+<p style="font-family: 'VT323', monospace; font-size: 16px; color: var(--gold); margin: -12px 0 20px;">Все привилегии выдаются один раз и остаются <span class="highlight">навсегда</span> — без подписок и продлений</p>
 <div class="donate-grid">
 
 <!-- HUNTER -->
 <div class="donate-card hunter">
 <div class="donate-rank">
-<svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"
-viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="7" width="12"
-height="2" fill="#8b5e3c"/><rect x="12" y="6" width="2" height="4" fill="#c8a060"/><rect
-x="14" y="4" width="2" height="8" fill="#8b5e3c"/><rect x="10" y="2" width="2" height="2"
-fill="#c8a060"/><rect x="10" y="12" width="2" height="2" fill="#c8a060"/><rect x="11" y="4"
-width="1" height="8" fill="#c8a060" opacity="0.4"/></svg>
+<svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--hunter)" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
 Hunter</div>
 <div class="donate-price">39 ₽</div>
 <ul class="donate-perks">
@@ -759,19 +675,13 @@ Hunter</div>
 <li>2 точки дома</li>
 <li>3 слота на аукционе</li>
 </ul>
-<a href="https://t.me/n8namer" class="btn-donate" target="_blank">Купить →</a>
+<a href="https://t.me/VanillaHouseSupport" class="btn-donate" target="_blank">Купить →</a>
 </div>
 <!-- MINER -->
 <div class="donate-card miner">
 <div class="best-value">POPULAR</div>
 <div class="donate-rank">
-<svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"
-viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="12" width="2"
-height="2" fill="#8b5e3c"/><rect x="2" y="10" width="2" height="2" fill="#8b5e3c"/><rect
-x="4" y="8" width="2" height="2" fill="#8b5e3c"/><rect x="6" y="6" width="2" height="2"
-fill="#8b5e3c"/><rect x="8" y="4" width="2" height="2" fill="#9a9a9a"/><rect x="10" y="2"
-width="2" height="2" fill="#9a9a9a"/><rect x="12" y="0" width="4" height="4"
-fill="#7a7a7a"/><rect x="8" y="2" width="4" height="2" fill="#bbb"/></svg>
+<svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--miner)" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 6.5a4 4 0 0 0-5.6 4.6L3 18l3 3 6.9-6.9a4 4 0 0 0 4.6-5.6l-2.4 2.4-2-2 2.4-2.4z"/></svg>
 Miner</div>
 <div class="donate-price">89 ₽</div>
 <div class="inherited-note">+ все привилегии Hunter</div>
@@ -783,19 +693,13 @@ Miner</div>
 <li>3 точки дома</li>
 <li>5 слотов на аукционе</li>
 </ul>
-<a href="https://t.me/n8namer" class="btn-donate" target="_blank">Купить →</a>
+<a href="https://t.me/VanillaHouseSupport" class="btn-donate" target="_blank">Купить →</a>
 </div>
 
 <!-- GRIEFER -->
 <div class="donate-card griefer">
 <div class="donate-rank">
-<svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"
-viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect width="16" height="16"
-fill="#ef5350"/><rect x="0" y="0" width="4" height="4" fill="#fff"/><rect x="12" y="0" width="4"
-height="4" fill="#fff"/><rect x="0" y="12" width="4" height="4" fill="#fff"/><rect x="12" y="12"
-width="4" height="4" fill="#fff"/><rect x="4" y="4" width="8" height="8" fill="#c62828"/><rect
-x="5" y="1" width="6" height="2" fill="#c62828"/><rect x="7" y="0" width="2" height="1"
-fill="#f5c518"/></svg>
+<svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--griefer)" xmlns="http://www.w3.org/2000/svg"><polygon points="13 2 4 14 11 14 10 22 20 10 13 10 13 2"/></svg>
 Griefer</div>
 <div class="donate-price">149 ₽</div>
 <div class="inherited-note">+ все привилегии Miner</div>
@@ -806,7 +710,7 @@ Griefer</div>
 <li>4 точки дома</li>
 <li>7 слотов на аукционе</li>
 </ul>
-<a href="https://t.me/n8namer" class="btn-donate" target="_blank">Купить →</a>
+<a href="https://t.me/VanillaHouseSupport" class="btn-donate" target="_blank">Купить →</a>
 </div>
 </div>
 <!-- YOUTUBER SPECIAL -->
@@ -814,11 +718,7 @@ Griefer</div>
 <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
 <div style="flex: 1; min-width: 220px;">
 <div class="donate-rank">
-<svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"
-viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="3" width="10"
-height="10" fill="#c62828"/><rect x="10" y="5" width="6" height="6" fill="#ef5350"/><rect
-x="2" y="5" width="4" height="6" fill="#ffcdd2" opacity="0.3"/><rect x="4" y="6" width="2"
-height="4" fill="#fff" opacity="0.8"/></svg>
+<svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gold)" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><polygon points="10 8 16.5 12 10 16 10 8"/></svg>
 YouTuber</div>
 <div class="donate-price" style="font-size: 16px; color: var(--gold);">БЕСПЛАТНО · по заявке</div>
 <ul class="donate-perks" style="margin-top: 12px;">
@@ -828,12 +728,12 @@ YouTuber</div>
 </ul>
 </div>
 <div style="flex: 2; min-width: 220px;">
-<p style="font-size: 17px; color: #c0c0c0; line-height: 1.6; margin-bottom: 16px;">
+<p style="font-size: 17px; color: rgb(192, 192, 192); line-height: 1.6; margin-bottom: 16px;">
 Требования: <span class="highlight">5 видео</span> о сервере (без негатива),
 
 <span class="highlight">от 100 подписчиков</span>, стабильная активность на канале.
 </p>
-<a href="https://t.me/n8namer" class="btn-donate" style="display: inline-block; width: auto; padding: 12px 28px;" target="_blank">
+<a href="https://t.me/VanillaHouseSupport" class="btn-donate" style="display: inline-block; width: auto; padding: 12px 28px;" target="_blank">
 Подать заявку в TG →
 </a>
 </div>
@@ -849,23 +749,13 @@ YouTuber</div>
 <!-- SECURITY -->
 <section id="security">
 <div class="section-header">
-<svg class="block-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-<rect x="3" y="0" width="10" height="2" fill="#ef5350"/>
-<rect x="1" y="2" width="14" height="12" fill="#c62828"/>
-<rect x="3" y="4" width="10" height="2" fill="#ef9a9a"/>
-<rect x="5" y="6" width="6" height="6" fill="#ffcdd2"/>
-<rect x="6" y="7" width="4" height="4" fill="#c62828"/>
-</svg>
+<svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--griefer)" xmlns="http://www.w3.org/2000/svg"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg>
 <div class="section-title">Защита и правила</div>
 </div>
 <div class="rules-grid">
 <div class="rule-card">
 <span class="rule-icon">
-<svg viewBox="0 0 16 16" width="28" height="28"
-xmlns="http://www.w3.org/2000/svg"><rect width="16" height="16" fill="#4a4a4a"/><rect
-x="2" y="2" width="12" height="6" fill="#7a7a7a"/><rect x="4" y="3" width="4" height="4"
-fill="#aaa"/><rect x="2" y="9" width="12" height="5" fill="#5a5a5a"/><rect x="4" y="10"
-width="8" height="3" fill="#333"/><rect x="5" y="11" width="6" height="1" fill="#888"/></svg>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#9a9a9a" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="5.5" rx="8" ry="2.8"/><path d="M4 5.5V12c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8V5.5"/><path d="M4 12v6.5c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8V12"/></svg>
 </span>
 <h3>Резервные копии</h3>
 <p>Регулярные бэкапы сервера. Даже если произойдёт краш или попытка взлома
@@ -874,13 +764,7 @@ width="8" height="3" fill="#333"/><rect x="5" y="11" width="6" height="1" fill="
 <div class="rule-card">
 <span class="rule-icon">
 
-<svg viewBox="0 0 16 16" width="28" height="28"
-xmlns="http://www.w3.org/2000/svg"><rect x="3" y="0" width="10" height="2"
-fill="#5d8a3c"/><rect x="1" y="2" width="14" height="8" fill="#3d6b22"/><rect x="2" y="10"
-width="12" height="2" fill="#3d6b22"/><rect x="4" y="12" width="8" height="2"
-fill="#5d8a3c"/><rect x="6" y="14" width="4" height="2" fill="#3d6b22"/><rect x="5" y="4"
-width="6" height="2" fill="#8bc34a"/><rect x="7" y="6" width="2" height="4"
-fill="#8bc34a"/></svg>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--grass)" xmlns="http://www.w3.org/2000/svg"><polyline points="2 13 6.5 13 9 6 14 20 16.5 13 22 13"/></svg>
 </span>
 <h3>Защита от лагов</h3>
 <p>Жёсткие ограничения на лаг-машины и эксплойты. Стабильная работа для
@@ -888,13 +772,7 @@ fill="#8bc34a"/></svg>
 </div>
 <div class="rule-card">
 <span class="rule-icon">
-<svg viewBox="0 0 16 16" width="28" height="28"
-xmlns="http://www.w3.org/2000/svg"><rect x="0" y="10" width="2" height="2"
-fill="#8b5e3c"/><rect x="2" y="8" width="2" height="2" fill="#8b5e3c"/><rect x="4" y="6"
-width="2" height="2" fill="#8b5e3c"/><rect x="6" y="4" width="4" height="4"
-fill="#9a9a9a"/><rect x="10" y="2" width="4" height="4" fill="#7a7a7a"/><rect x="8" y="2"
-width="4" height="2" fill="#bbb"/><rect x="6" y="6" width="2" height="2" fill="#bbb"
-opacity="0.4"/></svg>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#9a9a9a" xmlns="http://www.w3.org/2000/svg"><path d="M12 3 2 20h20L12 3z"/><line x1="12" y1="10" x2="12" y2="14.5"/><line x1="12" y1="17.2" x2="12" y2="17.3"/></svg>
 </span>
 <h3>Взлом / краш</h3>
 <p>Попытка сломать сервер = <span class="red">бан аккаунта + бан по IP</span>.
@@ -902,29 +780,21 @@ opacity="0.4"/></svg>
 </div>
 <div class="rule-card">
 <span class="rule-icon">
-<svg viewBox="0 0 16 16" width="28" height="28"
-xmlns="http://www.w3.org/2000/svg"><rect x="2" y="0" width="12" height="2" fill="#ef5350"/><rect x="0" y="2" width="16" height="2" fill="#ef5350"/><rect x="1" y="4" width="14" height="8" fill="#c62828"/><rect x="3" y="6" width="10" height="4" fill="#ef5350"/><rect x="6" y="5" width="4" height="6" fill="#ef5350"/><rect x="0" y="12" width="16" height="2" fill="#ef5350"/><rect x="2" y="14" width="12" height="2" fill="#c62828"/></svg>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--griefer)" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>
 </span>
 <h3>Читы / чит-клиенты</h3>
 <p>Использование читов = <span class="red">бан по IP + блокировка аккаунта навсегда</span>. Никаких предупреждений и апелляций</p>
 </div>
 <div class="rule-card">
 <span class="rule-icon">
-<svg viewBox="0 0 16 16" width="28" height="28"
-xmlns="http://www.w3.org/2000/svg"><rect x="4" y="0" width="8" height="2" fill="#ff9800"/><rect x="2" y="2" width="12" height="2" fill="#ff9800"/><rect x="1" y="4" width="14" height="8" fill="#e65100"/><rect x="3" y="5" width="4" height="6" fill="#ffb74d"/><rect x="3" y="8" width="10" height="1" fill="#ffb74d"/><rect x="2" y="12" width="12" height="2" fill="#ff9800"/><rect x="4" y="14" width="8" height="2" fill="#e65100"/></svg>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#ff9800" xmlns="http://www.w3.org/2000/svg"><polyline points="15 6 21 12 15 18"/><polyline points="9 6 3 12 9 18"/></svg>
 </span>
 <h3>Багоюз / эксплойты</h3>
 <p>Использование багов и недочётов сервера в своих целях = <span class="red">блокировка навсегда</span>. Если нашёл баг — <span class="highlight">сообщи в поддержку</span>, иначе бан. Распространение эксплойтов также карается перманентным баном</p>
 </div>
 <div class="rule-card green">
 <span class="rule-icon">
-<svg viewBox="0 0 16 16" width="28" height="28"
-xmlns="http://www.w3.org/2000/svg"><rect x="6" y="0" width="4" height="2"
-fill="#f5c518"/><rect x="4" y="2" width="8" height="2" fill="#f5c518"/><rect x="2" y="4"
-width="12" height="2" fill="#f5c518"/><rect x="0" y="6" width="16" height="2"
-fill="#f5c518"/><rect x="0" y="8" width="16" height="4" fill="#f5c518"/><rect x="2" y="12"
-width="12" height="2" fill="#f5c518"/><rect x="7" y="4" width="2" height="5"
-fill="#1a1a1a"/><rect x="7" y="10" width="2" height="2" fill="#1a1a1a"/></svg>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gold)" xmlns="http://www.w3.org/2000/svg"><path d="M4 21V4c0-.6 4-1.5 8-1.5s4 1.5 8 1.5v11c0 .6-4 1.5-8 1.5s-8-1.5-8-1.5"/></svg>
 </span>
 <h3>Гриф и оскорбления</h3>
 <p>За гриф и оскорбления — <span class="red">бан 7 дней</span>. Уважайте друг
@@ -942,59 +812,35 @@ fill="#1a1a1a"/><rect x="7" y="10" width="2" height="2" fill="#1a1a1a"/></svg>
 <!-- CONTACTS -->
 <section id="contacts">
 <div class="section-header">
-<svg class="block-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-<rect width="16" height="16" fill="#1976d2"/>
-<rect x="2" y="3" width="12" height="1" fill="#90caf9"/>
-<rect x="2" y="5" width="8" height="1" fill="#90caf9"/>
-<rect x="2" y="9" width="12" height="1" fill="#90caf9"/>
-<rect x="2" y="11" width="6" height="1" fill="#90caf9"/>
-</svg>
+<svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--diamond)" xmlns="http://www.w3.org/2000/svg"><path d="M4 4h16v12H8l-4 4V4z"/></svg>
 <div class="section-title">Контакты и поддержка</div>
 </div>
 <div class="contact-bar">
-<a href="https://t.me/vanillahouse_mpv" class="contact-btn tg" target="_blank">
-<svg style="width:14px;height:14px;vertical-align:middle;margin-right:6px;" viewBox="0
-0 16 16" xmlns="http://www.w3.org/2000/svg"><rect width="16" height="16" fill="#1976d2"
-rx="3"/><rect x="2" y="4" width="12" height="1" fill="#90caf9"/><rect x="2" y="6" width="8"
-height="1" fill="#90caf9"/><rect x="2" y="10" width="12" height="1" fill="#90caf9"/><rect
-x="2" y="12" width="6" height="1" fill="#90caf9"/></svg>
-TG Канал @vanillahouse_mpv
+<a href="https://t.me/VHminecraft" class="contact-btn tg" target="_blank">
+<svg style="width:14px;height:14px;vertical-align:middle;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--diamond)" xmlns="http://www.w3.org/2000/svg"><line x1="21" y1="3" x2="10.5" y2="13.5"/><polygon points="21 3 14.5 21 10.5 13.5 3 9.5 21 3"/></svg>
+TG Канал @VHminecraft
 </a>
-<a href="https://t.me/n8namer" class="contact-btn support" target="_blank">
-<svg style="width:14px;height:14px;vertical-align:middle;margin-right:6px;" viewBox="0
-0 16 16" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="2" width="14" height="10"
-fill="#5d8a3c"/><rect x="2" y="3" width="12" height="8" fill="#3d6b22"/><rect x="3" y="5"
-width="10" height="1" fill="#8bc34a"/><rect x="3" y="7" width="7" height="1"
-fill="#8bc34a"/><rect x="1" y="12" width="4" height="3" fill="#5d8a3c"/></svg>
-Поддержка @n8namer
+<a href="https://t.me/VanillaHouseSupport" class="contact-btn support" target="_blank">
+<svg style="width:14px;height:14px;vertical-align:middle;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--grass)" xmlns="http://www.w3.org/2000/svg"><path d="M4 17v-5a8 8 0 0 1 16 0v5"/><rect x="2" y="15" width="4" height="6" rx="1.5"/><rect x="18" y="15" width="4" height="6" rx="1.5"/></svg>
+Поддержка @VanillaHouseSupport
 </a>
 </div>
-<div style="margin-top: 16px; padding: 20px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.07);">
-<p style="font-size: 18px; color: #888; text-align: center; line-height: 1.7;">
+<div style="margin-top: 16px; padding: 20px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.07);">
+<p style="font-size: 18px; color: rgb(136, 136, 136); text-align: center; line-height: 1.7;">
 По вопросам доната, жалобам и предложениям — пишите в личные сообщения
-<a href="https://t.me/n8namer" style="color: var(--diamond); text-decoration: none;">@n8namer</a>.
+<a href="https://t.me/VanillaHouseSupport" style="color: var(--diamond); text-decoration: none;">@VanillaHouseSupport</a>.
 Новости и обновления сервера в канале
-<a href="https://t.me/vanillahouse_mpv" style="color: var(--diamond); text-decoration: none;">@vanillahouse_mpv</a>.
+<a href="https://t.me/VHminecraft" style="color: var(--diamond); text-decoration: none;">@VHminecraft</a>.
 </p>
 </div>
 </section>
 <div class="footer-text">
 
-<p style="font-family: 'Press Start 2P', monospace; font-size: 8px; color: #333; margin-top: 30px;">
+<p style="font-family: &quot;Press Start 2P&quot;, monospace; font-size: 8px; color: rgb(51, 51, 51); margin-top: 30px;">
 © VanillaHouse · Vanilla Survival Server
 </p>
 </div>
 </main>
-<!-- Ground -->
-<div class="ground" id="ground"></div>
-<script>
-const g = document.getElementById('ground');
-for (let i = 0; i < 60; i++) {
-const b = document.createElement('div');
-b.className = 'ground-block';
-g.appendChild(b);
-}
-</script>
 <!-- Toast -->
 <div id="toast">IP скопирован!</div>
 <script>
@@ -1006,6 +852,7 @@ t.classList.add('show');
 setTimeout(() => t.classList.remove('show'), 2000);
 }
 </script>
-</body>
-</html>
 
+
+
+</body></html>
