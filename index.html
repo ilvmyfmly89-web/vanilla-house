@@ -1,858 +1,646 @@
 <!DOCTYPE html>
-<html lang="ru"><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<html lang="ru">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VanillaHouse — Minecraft Server</title>
-<link rel="preconnect" href="https://fonts.googleapis.com/">
-<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
-<link href="VanillaHouse%20%E2%80%94%20Minecraft%20Server_files/css2_1i54.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
---grass: #5d8a3c;
---grass-dark: #3d6b22;
---dirt: #8b5e3c;
---dirt-dark: #6b3e1c;
---stone: #7a7a7a;
---stone-dark: #4a4a4a;
---wood: #9c7a4a;
---sky: #87ceeb;
---night: #0a0f1e;
---gold: #f5c518;
---diamond: #4fc3f7;
---hunter: #4fc3f7;
---miner: #ff9800;
---griefer: #f06292;
---pixel: 4px;
-}
-html { scroll-behavior: smooth; }
-body {
-font-family: 'VT323', monospace;
-background: var(--night);
-color: #e0e0e0;
-overflow-x: hidden;
-}
-/* ====== BACKGROUND IMAGE ====== */
-#sky-bg {
-position: fixed;
-inset: 0;
-z-index: 0;
-background: url('p4.png') center center / cover no-repeat;
-overflow: hidden;
-}
-#sky-bg::after {
-content: '';
-position: absolute;
-inset: 0;
-background: rgba(0, 0, 0, 0.45);
-}
-/* ====== LAYOUT ====== */
-main {
-position: relative;
-z-index: 2;
-max-width: 900px;
-margin: 0 auto;
-padding: 0 16px 60px;
-}
-/* ====== HEADER ====== */
-.hero {
-text-align: center;
-padding: 60px 16px 40px;
-}
-.hero-logo {
-font-family: 'Press Start 2P', monospace;
-font-size: clamp(22px, 5vw, 40px);
-color: var(--gold);
-text-shadow:
-3px 3px 0 #7a5a00,
--1px -1px 0 #b08000;
-line-height: 1.4;
-margin-bottom: 8px;
-animation: pulse 3s ease-in-out infinite;
-}
-.hero-sub {
-font-family: 'Press Start 2P', monospace;
-font-size: clamp(8px, 2vw, 13px);
-color: var(--grass);
-text-shadow: 2px 2px 0 var(--grass-dark);
-margin-bottom: 32px;
-}
-@keyframes pulse {
-0%, 100% { text-shadow: 3px 3px 0 #7a5a00, -1px -1px 0 #b08000; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-50% { text-shadow: 3px 3px 0 #7a5a00, -1px -1px 0 #b08000, 0 0 20px rgba(245,197,24,0.4); }
-}
-.ip-box {
-display: inline-flex;
-align-items: center;
-gap: 12px;
-background: rgba(0,0,0,0.6);
-border: 3px solid var(--grass);
-padding: 12px 24px;
-font-family: 'Press Start 2P', monospace;
-font-size: clamp(9px, 2vw, 13px);
-color: white;
-cursor: pointer;
-transition: border-color 0.2s, background 0.2s;
-image-rendering: pixelated;
-}
-.ip-box:hover {
-border-color: var(--gold);
-background: rgba(0,0,0,0.8);
-}
-.copy-hint {
-font-size: 11px;
-color: var(--grass);
-margin-top: 8px;
-display: block;
-font-family: 'VT323', monospace;
-font-size: 16px;
-}
-.status-badge {
-display: inline-flex;
-align-items: center;
-gap: 8px;
-margin-bottom: 16px;
-font-family: 'Press Start 2P', monospace;
-font-size: clamp(8px, 1.8vw, 11px);
-color: var(--hunter);
-}
-.status-dot {
-width: 9px;
-height: 9px;
-background: var(--hunter);
-box-shadow: 0 0 8px var(--hunter);
-animation: blink 1.6s ease-in-out infinite;
-}
-@keyframes blink {
-0%, 100% { opacity: 1; }
-50% { opacity: 0.35; }
-}
-/* ====== GALLERY ====== */
-.gallery-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-gap: 16px;
-margin-bottom: 16px;
-}
-.gallery-grid img {
-width: 100%;
-height: 200px;
-object-fit: cover;
-display: block;
-border: 2px solid var(--stone-dark);
-image-rendering: pixelated;
-transition: border-color 0.2s, transform 0.2s;
-}
-.gallery-grid img:hover {
-border-color: var(--gold);
-transform: translateY(-4px);
-}
-/* ====== PIXEL BLOCK SECTION HEADER ====== */
-.section-header {
-display: flex;
-align-items: center;
-gap: 16px;
-margin: 56px 0 24px;
-}
-.block-icon {
-width: 40px;
-height: 40px;
-flex-shrink: 0;
-image-rendering: pixelated;
-}
+  :root {
+    --bg: #0b0f0d;
+    --bg-elevated: #101512;
+    --panel: #131a16;
+    --line: rgba(255,255,255,0.07);
+    --text: #eef1ef;
+    --text-dim: #94a29b;
+    --text-faint: #5b665f;
 
-.section-title {
-font-family: 'Press Start 2P', monospace;
-font-size: clamp(11px, 2.5vw, 16px);
-color: var(--gold);
-text-shadow: 2px 2px 0 #7a5a00;
-line-height: 1.5;
-}
-/* ====== CARDS ====== */
-.card {
-background: rgba(0,0,0,0.55);
-border: 2px solid var(--stone);
-border-left: 4px solid var(--grass);
-padding: 20px 24px;
-margin-bottom: 16px;
-position: relative;
-transition: border-color 0.2s, background 0.2s;
-}
-.card:hover {
-background: rgba(0,0,0,0.7);
-border-color: var(--gold);
-border-left-color: var(--gold);
-}
-.card::before {
-content: '▶';
-position: absolute;
-left: -16px;
-top: 20px;
-color: var(--grass);
-font-size: 12px;
-transition: color 0.2s;
-}
-.card:hover::before { color: var(--gold); }
-.card-title {
-font-family: 'Press Start 2P', monospace;
-font-size: clamp(9px, 1.8vw, 12px);
-color: #fff;
-margin-bottom: 12px;
-}
-.card p, .card li {
-font-size: clamp(16px, 3vw, 20px);
-line-height: 1.6;
-color: #c8c8c8;
+    --moss: #5fb98a;
+    --moss-dim: #3a7a5c;
+    --amber: #e8b04b;
+    --clay: #d97757;
+    --sky: #6fb1d6;
 
-}
-.card ul { padding-left: 20px; }
-.card li { margin-bottom: 4px; }
-.highlight { color: var(--gold); font-weight: bold; }
-.green { color: var(--grass); }
-.blue { color: var(--diamond); }
-.red { color: var(--griefer); }
-/* ====== FEATURES GRID ====== */
-.features-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-gap: 16px;
-margin-bottom: 16px;
-}
-.feature-card {
-background: rgba(0,0,0,0.55);
-border: 2px solid var(--stone-dark);
-padding: 20px 16px;
-text-align: center;
-transition: border-color 0.2s, transform 0.2s;
-}
-.feature-card:hover {
-border-color: var(--grass);
-transform: translateY(-4px);
-}
-.feature-icon {
-font-size: 32px;
-display: block;
-margin-bottom: 10px;
-}
-.feature-card h3 {
-font-family: 'Press Start 2P', monospace;
-font-size: clamp(7px, 1.5vw, 10px);
-color: var(--gold);
-margin-bottom: 8px;
-line-height: 1.5;
-}
-.feature-card p {
-font-size: clamp(14px, 3vw, 18px);
-color: #b0b0b0;
+    --radius: 14px;
+    --font-display: 'Manrope', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
 
-line-height: 1.5;
-}
-/* ====== DONATE CARDS ====== */
-.donate-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-gap: 20px;
-margin-bottom: 16px;
-}
-.donate-card {
-border: 3px solid;
-padding: 24px 20px;
-position: relative;
-transition: transform 0.2s, box-shadow 0.2s;
-}
-.donate-card:hover {
-transform: translateY(-6px);
-}
-.donate-card.hunter {
-background: rgba(139, 195, 74, 0.1);
-border-color: var(--hunter);
-}
-.donate-card.miner {
-background: rgba(144, 202, 249, 0.1);
-border-color: var(--miner);
-position: relative;
-}
-.donate-card.griefer {
-background: rgba(239, 83, 80, 0.1);
-border-color: var(--griefer);
-}
-.donate-card.youtuber {
-background: rgba(245, 197, 24, 0.1);
-border-color: var(--gold);
-}
-.best-value {
-position: absolute;
-top: -13px;
-left: 50%;
-transform: translateX(-50%);
+  html { scroll-behavior: smooth; }
 
-background: var(--miner);
-color: #000;
-font-family: 'Press Start 2P', monospace;
-font-size: 7px;
-padding: 4px 10px;
-white-space: nowrap;
-}
-.donate-rank {
-font-family: 'Press Start 2P', monospace;
-font-size: clamp(12px, 3vw, 18px);
-margin-bottom: 6px;
-}
-.donate-card.hunter .donate-rank { color: var(--hunter); }
-.donate-card.miner .donate-rank { color: var(--miner); }
-.donate-card.griefer .donate-rank { color: var(--griefer); }
-.donate-card.youtuber .donate-rank { color: var(--gold); }
-.donate-price {
-font-family: 'Press Start 2P', monospace;
-font-size: clamp(16px, 4vw, 24px);
-color: white;
-margin-bottom: 16px;
-}
-.donate-perks {
-list-style: none;
-margin-bottom: 20px;
-}
-.donate-perks li {
-font-size: clamp(14px, 3vw, 18px);
-color: #c0c0c0;
-padding: 4px 0;
-border-bottom: 1px solid rgba(255,255,255,0.06);
-display: flex;
-align-items: flex-start;
-gap: 8px;
-}
-.donate-perks li::before {
-content: '✦';
-font-size: 12px;
-flex-shrink: 0;
-margin-top: 2px;
-}
+  body {
+    font-family: var(--font-display);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
 
-.donate-card.hunter .donate-perks li::before { color: var(--hunter); }
-.donate-card.miner .donate-perks li::before { color: var(--miner); }
-.donate-card.griefer .donate-perks li::before { color: var(--griefer); }
-.donate-card.youtuber .donate-perks li::before { color: var(--gold); }
-.cmd {
-font-family: monospace;
-background: rgba(0,0,0,0.5);
-padding: 1px 5px;
-font-size: 14px;
-color: #90ee90;
-border: 1px solid rgba(255,255,255,0.15);
-}
-.inherited-note {
-font-size: 13px;
-color: #888;
-font-style: italic;
-margin-bottom: 10px;
-font-family: 'VT323', monospace;
-}
-/* Donate button */
-.btn-donate {
-display: block;
-width: 100%;
-padding: 12px;
-font-family: 'Press Start 2P', monospace;
-font-size: clamp(7px, 1.5vw, 10px);
-text-align: center;
-text-decoration: none;
-cursor: pointer;
-border: 2px solid;
-background: transparent;
-transition: background 0.15s, color 0.15s;
-}
-.donate-card.hunter .btn-donate {
-color: var(--hunter);
-border-color: var(--hunter);
-}
-.donate-card.hunter .btn-donate:hover {
-background: var(--hunter);
-color: #000;
-}
-.donate-card.miner .btn-donate {
-color: var(--miner);
+  main {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
 
-border-color: var(--miner);
-}
-.donate-card.miner .btn-donate:hover {
-background: var(--miner);
-color: #000;
-}
-.donate-card.griefer .btn-donate {
-color: var(--griefer);
-border-color: var(--griefer);
-}
-.donate-card.griefer .btn-donate:hover {
-background: var(--griefer);
-color: #000;
-}
-.donate-card.youtuber .btn-donate {
-color: var(--gold);
-border-color: var(--gold);
-}
-.donate-card.youtuber .btn-donate:hover {
-background: var(--gold);
-color: #000;
-}
-/* ====== RULES / INFO CARDS ====== */
-.rules-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-gap: 16px;
-}
-.rule-card {
-background: rgba(0,0,0,0.55);
-border: 2px solid var(--stone-dark);
-padding: 20px;
-transition: border-color 0.2s;
-}
-.rule-card:hover { border-color: var(--griefer); }
-.rule-card.green:hover { border-color: var(--grass); }
-.rule-icon {
-font-size: 28px;
-margin-bottom: 10px;
-display: block;
-}
+  a { color: inherit; }
 
-.rule-card h3 {
-font-family: 'Press Start 2P', monospace;
-font-size: clamp(7px, 1.5vw, 10px);
-color: var(--gold);
-margin-bottom: 10px;
-line-height: 1.5;
-}
-.rule-card p {
-font-size: clamp(15px, 3vw, 19px);
-color: #c0c0c0;
-line-height: 1.55;
-}
-/* ====== FOOTER / CONTACTS ====== */
-.contact-bar {
-display: flex;
-flex-wrap: wrap;
-gap: 16px;
-margin-top: 40px;
-padding: 24px;
-background: rgba(0,0,0,0.6);
-border: 2px solid var(--stone);
-justify-content: center;
-align-items: center;
-}
-.contact-btn {
-display: inline-flex;
-align-items: center;
-gap: 8px;
-padding: 12px 22px;
-font-family: 'Press Start 2P', monospace;
-font-size: clamp(7px, 1.5vw, 10px);
-text-decoration: none;
-border: 2px solid;
-transition: background 0.15s, color 0.15s;
-}
-.contact-btn.tg {
-color: var(--diamond);
-border-color: var(--diamond);
-}
-.contact-btn.tg:hover {
-background: var(--diamond);
-color: #000;
-}
+  /* ====== NAV ====== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(11,15,13,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    overflow-x: auto;
+    padding: 4px 12px;
+  }
+  nav a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-decoration: none;
+    white-space: nowrap;
+    border-radius: 8px;
+    transition: color 0.15s, background 0.15s;
+  }
+  nav a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+  nav svg { width: 14px; height: 14px; opacity: 0.8; }
 
-.contact-btn.support {
-color: var(--grass);
-border-color: var(--grass);
-}
-.contact-btn.support:hover {
-background: var(--grass);
-color: #000;
-}
-.footer-text {
-text-align: center;
-margin-top: 20px;
-font-size: 16px;
-color: #555;
-}
-/* ====== NAV ====== */
-nav {
-position: sticky;
-top: 0;
-z-index: 100;
-background: rgba(0,0,0,0.85);
-border-bottom: 3px solid var(--grass-dark);
-display: flex;
-gap: 0;
-overflow-x: auto;
-scrollbar-width: none;
-}
-nav::-webkit-scrollbar { display: none; }
-nav a {
-display: block;
-padding: 14px 18px;
-font-family: 'Press Start 2P', monospace;
-font-size: clamp(6px, 1.2vw, 9px);
-color: #aaa;
-text-decoration: none;
-white-space: nowrap;
-border-right: 1px solid rgba(255,255,255,0.05);
-transition: color 0.15s, background 0.15s;
-}
-nav a:hover {
-color: var(--gold);
-background: rgba(255,255,255,0.04);
-}
+  /* ====== HERO ====== */
+  .hero {
+    text-align: center;
+    padding: 72px 16px 48px;
+  }
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border: 1px solid rgba(95,185,138,0.35);
+    background: rgba(95,185,138,0.08);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--moss);
+    letter-spacing: 0.02em;
+    margin-bottom: 28px;
+  }
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--moss);
+    box-shadow: 0 0 8px var(--moss);
+    animation: blink 1.8s ease-in-out infinite;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-/* ====== DIVIDER ====== */
-.pixel-divider {
-display: flex;
-height: 8px;
-overflow: hidden;
-margin: 40px 0;
-gap: 2px;
-}
-.pixel-divider span {
-flex: 1;
-height: 100%;
-background: var(--grass);
-opacity: 0.3;
-}
-.pixel-divider span:nth-child(3n) { background: var(--dirt); opacity: 0.25; }
-.pixel-divider span:nth-child(5n) { background: var(--stone); opacity: 0.2; }
-/* Pixel corners effect */
-.pixel-border {
-position: relative;
-border: 3px solid var(--grass-dark);
-padding: 24px;
-margin-bottom: 24px;
-background: rgba(0,0,0,0.5);
-}
-.pixel-border::before, .pixel-border::after {
-content: '';
-position: absolute;
-width: 8px;
-height: 8px;
-background: var(--night);
-}
-.pixel-border::before { top: -3px; left: -3px; }
-.pixel-border::after { bottom: -3px; right: -3px; }
-/* Scrollbar */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #0a0f1e; }
-::-webkit-scrollbar-thumb { background: var(--grass-dark); }
-/* Toast */
-#toast {
-position: fixed;
-bottom: 70px;
-left: 50%;
-transform: translateX(-50%) translateY(20px);
+  .hero-logo {
+    font-size: clamp(38px, 8vw, 64px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #fff 30%, var(--moss) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 10px;
+  }
+  .hero-sub {
+    font-size: clamp(14px, 2.5vw, 17px);
+    color: var(--text-dim);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .hero-version {
+    font-size: 13px;
+    color: var(--sky);
+    font-family: var(--font-mono);
+    margin-bottom: 32px;
+  }
 
-background: var(--grass-dark);
-color: white;
-padding: 10px 24px;
-font-family: 'Press Start 2P', monospace;
-font-size: 9px;
-z-index: 999;
-opacity: 0;
-transition: opacity 0.3s, transform 0.3s;
-pointer-events: none;
-border: 2px solid var(--gold);
-}
-#toast.show {
-opacity: 1;
-transform: translateX(-50%) translateY(0);
-}
-@media (max-width: 600px) {
-.section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-.contact-bar { flex-direction: column; }
-.donate-grid { grid-template-columns: 1fr; }
-}
+  .ip-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px 22px;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+  .ip-box:hover { border-color: var(--moss); transform: translateY(-1px); }
+  .ip-box .label { font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.08em; }
+  .ip-box #ip-text { font-family: var(--font-mono); font-size: 16px; font-weight: 600; color: #fff; }
+  .ip-box svg { width: 15px; height: 15px; color: var(--text-faint); }
+  .copy-hint { display: block; font-size: 12px; color: var(--text-faint); margin-top: 10px; }
+
+  /* ====== SECTION HEADERS ====== */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 64px 0 24px;
+  }
+  .section-header svg { width: 20px; height: 20px; color: var(--moss); }
+  .section-title { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+  .section-lede {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin: -14px 0 20px;
+  }
+
+  /* ====== FEATURES ====== */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .feature-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px;
+  }
+  .feature-card svg { width: 22px; height: 22px; color: var(--moss); margin-bottom: 14px; }
+  .feature-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .feature-card p { font-size: 14px; color: var(--text-dim); }
+
+  /* ====== DIVIDER ====== */
+  .divider {
+    height: 1px;
+    background: var(--line);
+    margin: 56px 0;
+  }
+
+  /* ====== DONATE ====== */
+  .donate-note {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin: -14px 0 20px;
+  }
+  .donate-note .highlight { color: var(--amber); font-weight: 600; }
+
+  .donate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .donate-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 24px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .donate-card:hover { transform: translateY(-3px); }
+  .donate-card.hunter:hover { border-color: var(--sky); }
+  .donate-card.miner:hover { border-color: var(--amber); }
+  .donate-card.griefer:hover { border-color: var(--clay); }
+
+  .best-value {
+    position: absolute;
+    top: -11px; left: 24px;
+    background: var(--amber);
+    color: #1a1300;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+
+  .donate-rank {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 17px; font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .donate-rank svg { width: 18px; height: 18px; }
+  .donate-card.hunter .donate-rank svg { color: var(--sky); }
+  .donate-card.miner .donate-rank svg { color: var(--amber); }
+  .donate-card.griefer .donate-rank svg { color: var(--clay); }
+
+  .donate-price { font-size: 26px; font-weight: 800; margin-bottom: 4px; }
+  .inherited-note { font-size: 12px; color: var(--text-faint); font-style: italic; margin-bottom: 16px; }
+
+  .donate-perks { list-style: none; margin-bottom: 20px; flex-grow: 1; }
+  .donate-perks li {
+    font-size: 14px; color: var(--text-dim);
+    padding: 7px 0;
+    border-bottom: 1px solid var(--line);
+    display: flex; gap: 8px;
+  }
+  .donate-perks li:last-child { border-bottom: none; }
+  .donate-perks li::before { content: '＋'; color: var(--text-faint); flex-shrink: 0; }
+
+  .cmd {
+    font-family: var(--font-mono);
+    background: rgba(255,255,255,0.06);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #a7e5b6;
+  }
+  .prefix-hunter { color: var(--sky); font-weight: 600; }
+  .prefix-miner { color: var(--amber); font-weight: 600; }
+  .prefix-griefer { color: var(--clay); font-weight: 600; }
+
+  .btn-donate {
+    display: block; text-align: center;
+    padding: 12px; border-radius: 10px;
+    font-size: 14px; font-weight: 700;
+    text-decoration: none;
+    border: 1px solid;
+    transition: background 0.15s, color 0.15s;
+  }
+  .donate-card.hunter .btn-donate { color: var(--sky); border-color: var(--sky); }
+  .donate-card.hunter .btn-donate:hover { background: var(--sky); color: #06202c; }
+  .donate-card.miner .btn-donate { color: var(--amber); border-color: var(--amber); }
+  .donate-card.miner .btn-donate:hover { background: var(--amber); color: #241a04; }
+  .donate-card.griefer .btn-donate { color: var(--clay); border-color: var(--clay); }
+  .donate-card.griefer .btn-donate:hover { background: var(--clay); color: #2a0f08; }
+
+  .donate-card.youtuber {
+    margin-top: 4px;
+    border-color: rgba(232,176,75,0.3);
+    background: linear-gradient(135deg, rgba(232,176,75,0.06), transparent);
+  }
+  .youtuber-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 24px;
+  }
+  .youtuber-grid .donate-rank svg { color: var(--amber); }
+  .youtuber-price { font-size: 15px; font-weight: 700; color: var(--amber); margin-bottom: 12px; }
+  .youtuber-copy { font-size: 14px; color: var(--text-dim); margin-bottom: 16px; }
+  .youtuber-copy .highlight { color: var(--amber); font-weight: 600; }
+  .btn-donate-inline {
+    display: inline-block; width: auto;
+    padding: 11px 24px;
+    color: var(--amber); border: 1px solid var(--amber);
+    border-radius: 10px; text-decoration: none;
+    font-size: 14px; font-weight: 700;
+    transition: background 0.15s, color 0.15s;
+  }
+  .btn-donate-inline:hover { background: var(--amber); color: #241a04; }
+
+  @media (max-width: 640px) {
+    .youtuber-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ====== RULES ====== */
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 12px;
+  }
+  .rule-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px;
+    transition: border-color 0.2s;
+  }
+  .rule-card.warn:hover { border-color: var(--clay); }
+  .rule-card.ok:hover { border-color: var(--moss); }
+  .rule-card svg { width: 20px; height: 20px; margin-bottom: 12px; }
+  .rule-card.ok svg { color: var(--moss); }
+  .rule-card.warn svg { color: var(--clay); }
+  .rule-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .rule-card p { font-size: 14px; color: var(--text-dim); }
+  .rule-card .danger { color: var(--clay); font-weight: 600; }
+  .rule-card .highlight { color: var(--amber); font-weight: 600; }
+
+  /* ====== CONTACTS ====== */
+  .contact-bar {
+    display: flex; flex-wrap: wrap; gap: 12px;
+    margin-top: 8px;
+  }
+  .contact-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 20px;
+    border-radius: 10px;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none;
+    border: 1px solid;
+    transition: background 0.15s, color 0.15s;
+  }
+  .contact-btn svg { width: 16px; height: 16px; }
+  .contact-btn.tg { color: var(--sky); border-color: var(--sky); }
+  .contact-btn.tg:hover { background: var(--sky); color: #06202c; }
+  .contact-btn.support { color: var(--moss); border-color: var(--moss); }
+  .contact-btn.support:hover { background: var(--moss); color: #06231a; }
+
+  .contact-note {
+    margin-top: 16px;
+    padding: 20px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-size: 14px;
+    color: var(--text-dim);
+  }
+  .contact-note a { color: var(--sky); text-decoration: none; }
+  .contact-note a:hover { text-decoration: underline; }
+
+  .footer-text {
+    text-align: center;
+    margin-top: 48px;
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+
+  /* Toast */
+  #toast {
+    position: fixed;
+    bottom: 28px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--moss);
+    color: #06231a;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 14px; font-weight: 700;
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 600px) {
+    .section-header { gap: 10px; }
+  }
 </style>
 </head>
 <body>
-<div id="sky-bg"></div>
+
 <nav>
-
-<a href="#about">
-<svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
-О сервере</a>
-<a href="#gallery">Галерея</a>
-<a href="#donate">
-<svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polygon points="12 2 21 8.5 18 22 6 22 3 8.5"/><path d="M3 8.5h18M9 8.5 12 22M15 8.5 12 22M8 2l4 6.5M16 2l-4 6.5"/></svg>
-Донат</a>
-<a href="#security">
-<svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg>
-Защита</a>
-<a href="#contacts">
-<svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 4h16v12H8l-4 4V4z"/></svg>
-Контакты</a>
+  <a href="#about">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
+    О сервере
+  </a>
+  <a href="#donate">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 21 8.5 18 22 6 22 3 8.5"/></svg>
+    Донат
+  </a>
+  <a href="#security">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg>
+    Защита
+  </a>
+  <a href="#contacts">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H8l-4 4V4z"/></svg>
+    Контакты
+  </a>
 </nav>
+
 <main>
-<!-- HERO -->
-<section class="hero">
-<div class="hero-logo">VanillaHouse</div>
-<div class="hero-sub">Vanilla Survival · Дружелюбное комьюнити · Pure Minecraft</div>
-<div class="hero-sub" style="font-size: clamp(7px, 1.5vw, 11px); color: rgb(79, 195, 247); margin-bottom: 0px; margin-top: -20px;">Версия 1.21.11</div>
-<div class="status-badge" style="margin-top: 24px;">
-<span class="status-dot"></span>
-СЕРВЕР ОНЛАЙН
-</div>
-<div style="margin-top: 8px;">
-<div class="ip-box" onclick="copyIP()" title="Нажми чтобы скопировать">
-<span style="color: rgb(102, 102, 102); font-size: 10px;">IP:</span>
-<span id="ip-text">today.vanilla.house</span>
-<span style="color: rgb(85, 85, 85); font-size: 10px;">
-<svg style="width:12px;height:12px;vertical-align:middle;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/></svg>
-</span>
-</div>
-<span class="copy-hint">[ нажми чтобы скопировать ]</span>
-</div>
-</section>
-<!-- GALLERY -->
-<section id="gallery">
-<div class="gallery-grid">
-<img src="1p.png" alt="Скриншот сервера VanillaHouse 1" loading="lazy">
-<img src="2p.png" alt="Скриншот сервера VanillaHouse 2" loading="lazy">
-<img src="3p.png" alt="Скриншот сервера VanillaHouse 3" loading="lazy">
-</div>
-</section>
-<!-- ABOUT -->
-<section id="about">
-<div class="section-header">
-<svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--grass)" xmlns="http://www.w3.org/2000/svg"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
-<div class="section-title">О сервере</div>
-</div>
-<div class="features-grid">
-<div class="feature-card">
-<span class="feature-icon">
-<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gold)" xmlns="http://www.w3.org/2000/svg"><path d="M4 17v-5a8 8 0 0 1 16 0v5"/><rect x="2" y="15" width="4" height="6" rx="1.5"/><rect x="18" y="15" width="4" height="6" rx="1.5"/></svg>
-</span>
-<h3>Отзывчивая поддержка</h3>
-<p>Быстро отвечаем на вопросы и помогаем с любыми проблемами</p>
-</div>
-<div class="feature-card">
-<span class="feature-icon">
-<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#c0c0c0" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
-</span>
-<h3>Честная модерация</h3>
-<p>Справедливые правила, без фаворитизма. Только честная игра</p>
-</div>
-<div class="feature-card">
-<span class="feature-icon">
-<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--grass)" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-</span>
-<h3>Лёгкое выживание</h3>
-<p>Удобный старт, дружелюбная среда для новых игроков</p>
-</div>
-</div>
-</section>
-<div class="pixel-divider">
-<span></span><span></span><span></span><span></span><span></span>
-<span></span><span></span><span></span><span></span><span></span>
-<span></span><span></span><span></span><span></span><span></span>
-<span></span><span></span><span></span><span></span><span></span>
-</div>
-<!-- DONATE -->
-<section id="donate">
-<div class="section-header">
-<svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--diamond)" xmlns="http://www.w3.org/2000/svg"><polygon points="12 2 21 8.5 18 22 6 22 3 8.5"/><path d="M3 8.5h18M9 8.5 12 22M15 8.5 12 22M8 2l4 6.5M16 2l-4 6.5"/></svg>
-<div class="section-title">Донат-привилегии</div>
-</div>
-<p style="font-family: 'VT323', monospace; font-size: 16px; color: var(--gold); margin: -12px 0 20px;">Все привилегии выдаются один раз и остаются <span class="highlight">навсегда</span> — без подписок и продлений</p>
-<div class="donate-grid">
 
-<!-- HUNTER -->
-<div class="donate-card hunter">
-<div class="donate-rank">
-<svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--hunter)" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
-Hunter</div>
-<div class="donate-price">39 ₽</div>
-<ul class="donate-perks">
-<li><span class="cmd">/kit hunter</span></li>
-<li><span class="cmd">/feed</span> — восстановить голод</li>
-<li><span class="cmd">/wb</span> — открытие верстака</li>
-<li>Префикс <span class="highlight">[Hunter]</span></li>
-<li>2 точки дома</li>
-<li>3 слота на аукционе</li>
-</ul>
-<a href="https://t.me/VanillaHouseSupport" class="btn-donate" target="_blank">Купить →</a>
-</div>
-<!-- MINER -->
-<div class="donate-card miner">
-<div class="best-value">POPULAR</div>
-<div class="donate-rank">
-<svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--miner)" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 6.5a4 4 0 0 0-5.6 4.6L3 18l3 3 6.9-6.9a4 4 0 0 0 4.6-5.6l-2.4 2.4-2-2 2.4-2.4z"/></svg>
-Miner</div>
-<div class="donate-price">89 ₽</div>
-<div class="inherited-note">+ все привилегии Hunter</div>
-<ul class="donate-perks">
-<li><span class="cmd">/kit miner</span></li>
-<li><span class="cmd">/heal</span> — восстановить здоровье</li>
-<li><span class="cmd">/ec</span> — открытие эндер-сундука</li>
-<li>Префикс <span class="blue">[Miner]</span></li>
-<li>3 точки дома</li>
-<li>5 слотов на аукционе</li>
-</ul>
-<a href="https://t.me/VanillaHouseSupport" class="btn-donate" target="_blank">Купить →</a>
-</div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="status-badge">
+      <span class="status-dot"></span>
+      СЕРВЕР ОНЛАЙН
+    </div>
+    <div class="hero-logo">VanillaHouse</div>
+    <div class="hero-sub">Vanilla Survival · Дружелюбное комьюнити · Pure Minecraft</div>
+    <div class="hero-version">версия 1.21.11</div>
 
-<!-- GRIEFER -->
-<div class="donate-card griefer">
-<div class="donate-rank">
-<svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--griefer)" xmlns="http://www.w3.org/2000/svg"><polygon points="13 2 4 14 11 14 10 22 20 10 13 10 13 2"/></svg>
-Griefer</div>
-<div class="donate-price">149 ₽</div>
-<div class="inherited-note">+ все привилегии Miner</div>
-<ul class="donate-perks">
-<li><span class="cmd">/kit griefer</span></li>
-<li><span class="cmd">/gift</span> — подарок игрокам</li>
-<li>Префикс <span class="red">[Griefer]</span></li>
-<li>4 точки дома</li>
-<li>7 слотов на аукционе</li>
-</ul>
-<a href="https://t.me/VanillaHouseSupport" class="btn-donate" target="_blank">Купить →</a>
-</div>
-</div>
-<!-- YOUTUBER SPECIAL -->
-<div class="donate-card youtuber" style="max-width: 100%; margin-top: 4px;">
-<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
-<div style="flex: 1; min-width: 220px;">
-<div class="donate-rank">
-<svg style="width:18px;height:18px;vertical-align:middle;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gold)" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><polygon points="10 8 16.5 12 10 16 10 8"/></svg>
-YouTuber</div>
-<div class="donate-price" style="font-size: 16px; color: var(--gold);">БЕСПЛАТНО · по заявке</div>
-<ul class="donate-perks" style="margin-top: 12px;">
-<li><span class="cmd">/wb</span> <span class="cmd">/ec</span> — верстак и эндер-сундук</li>
-<li><span class="cmd">/kit youtuber</span></li>
-<li>Уникальный префикс <span class="highlight">[YouTube]</span></li>
-</ul>
-</div>
-<div style="flex: 2; min-width: 220px;">
-<p style="font-size: 17px; color: rgb(192, 192, 192); line-height: 1.6; margin-bottom: 16px;">
-Требования: <span class="highlight">5 видео</span> о сервере (без негатива),
+    <div style="margin-top: 24px;">
+      <div class="ip-box" onclick="copyIP()" title="Нажми чтобы скопировать">
+        <span class="label">IP</span>
+        <span id="ip-text">today.vanilla.house</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/></svg>
+      </div>
+      <span class="copy-hint">нажми, чтобы скопировать</span>
+    </div>
+  </section>
 
-<span class="highlight">от 100 подписчиков</span>, стабильная активность на канале.
-</p>
-<a href="https://t.me/VanillaHouseSupport" class="btn-donate" style="display: inline-block; width: auto; padding: 12px 28px;" target="_blank">
-Подать заявку в TG →
-</a>
-</div>
-</div>
-</div>
-</section>
-<div class="pixel-divider">
-<span></span><span></span><span></span><span></span><span></span>
-<span></span><span></span><span></span><span></span><span></span>
-<span></span><span></span><span></span><span></span><span></span>
-<span></span><span></span><span></span><span></span><span></span>
-</div>
-<!-- SECURITY -->
-<section id="security">
-<div class="section-header">
-<svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--griefer)" xmlns="http://www.w3.org/2000/svg"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg>
-<div class="section-title">Защита и правила</div>
-</div>
-<div class="rules-grid">
-<div class="rule-card">
-<span class="rule-icon">
-<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#9a9a9a" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="5.5" rx="8" ry="2.8"/><path d="M4 5.5V12c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8V5.5"/><path d="M4 12v6.5c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8V12"/></svg>
-</span>
-<h3>Резервные копии</h3>
-<p>Регулярные бэкапы сервера. Даже если произойдёт краш или попытка взлома
-— данные восстановятся</p>
-</div>
-<div class="rule-card">
-<span class="rule-icon">
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-header">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
+      <div class="section-title">О сервере</div>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v-5a8 8 0 0 1 16 0v5"/><rect x="2" y="15" width="4" height="6" rx="1.5"/><rect x="18" y="15" width="4" height="6" rx="1.5"/></svg>
+        <h3>Отзывчивая поддержка</h3>
+        <p>Быстро отвечаем на вопросы и помогаем с любыми проблемами</p>
+      </div>
+      <div class="feature-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+        <h3>Честная модерация</h3>
+        <p>Справедливые правила, без фаворитизма. Только честная игра</p>
+      </div>
+      <div class="feature-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        <h3>Лёгкое выживание</h3>
+        <p>Удобный старт, дружелюбная среда для новых игроков</p>
+      </div>
+    </div>
+  </section>
 
-<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--grass)" xmlns="http://www.w3.org/2000/svg"><polyline points="2 13 6.5 13 9 6 14 20 16.5 13 22 13"/></svg>
-</span>
-<h3>Защита от лагов</h3>
-<p>Жёсткие ограничения на лаг-машины и эксплойты. Стабильная работа для
-всех игроков</p>
-</div>
-<div class="rule-card">
-<span class="rule-icon">
-<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#9a9a9a" xmlns="http://www.w3.org/2000/svg"><path d="M12 3 2 20h20L12 3z"/><line x1="12" y1="10" x2="12" y2="14.5"/><line x1="12" y1="17.2" x2="12" y2="17.3"/></svg>
-</span>
-<h3>Взлом / краш</h3>
-<p>Попытка сломать сервер = <span class="red">бан аккаунта + бан по IP</span>.
-Без предупреждений</p>
-</div>
-<div class="rule-card">
-<span class="rule-icon">
-<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--griefer)" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>
-</span>
-<h3>Читы / чит-клиенты</h3>
-<p>Использование читов = <span class="red">бан по IP + блокировка аккаунта навсегда</span>. Никаких предупреждений и апелляций</p>
-</div>
-<div class="rule-card">
-<span class="rule-icon">
-<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#ff9800" xmlns="http://www.w3.org/2000/svg"><polyline points="15 6 21 12 15 18"/><polyline points="9 6 3 12 9 18"/></svg>
-</span>
-<h3>Багоюз / эксплойты</h3>
-<p>Использование багов и недочётов сервера в своих целях = <span class="red">блокировка навсегда</span>. Если нашёл баг — <span class="highlight">сообщи в поддержку</span>, иначе бан. Распространение эксплойтов также карается перманентным баном</p>
-</div>
-<div class="rule-card green">
-<span class="rule-icon">
-<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gold)" xmlns="http://www.w3.org/2000/svg"><path d="M4 21V4c0-.6 4-1.5 8-1.5s4 1.5 8 1.5v11c0 .6-4 1.5-8 1.5s-8-1.5-8-1.5"/></svg>
-</span>
-<h3>Гриф и оскорбления</h3>
-<p>За гриф и оскорбления — <span class="red">бан 7 дней</span>. Уважайте друг
-друга и чужие постройки</p>
-</div>
-</div>
-</section>
-<div class="pixel-divider">
-<span></span><span></span><span></span><span></span><span></span>
-<span></span><span></span><span></span><span></span><span></span>
-<span></span><span></span><span></span><span></span><span></span>
-<span></span><span></span><span></span><span></span><span></span>
+  <div class="divider"></div>
 
-</div>
-<!-- CONTACTS -->
-<section id="contacts">
-<div class="section-header">
-<svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--diamond)" xmlns="http://www.w3.org/2000/svg"><path d="M4 4h16v12H8l-4 4V4z"/></svg>
-<div class="section-title">Контакты и поддержка</div>
-</div>
-<div class="contact-bar">
-<a href="https://t.me/VHminecraft" class="contact-btn tg" target="_blank">
-<svg style="width:14px;height:14px;vertical-align:middle;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--diamond)" xmlns="http://www.w3.org/2000/svg"><line x1="21" y1="3" x2="10.5" y2="13.5"/><polygon points="21 3 14.5 21 10.5 13.5 3 9.5 21 3"/></svg>
-TG Канал @VHminecraft
-</a>
-<a href="https://t.me/VanillaHouseSupport" class="contact-btn support" target="_blank">
-<svg style="width:14px;height:14px;vertical-align:middle;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--grass)" xmlns="http://www.w3.org/2000/svg"><path d="M4 17v-5a8 8 0 0 1 16 0v5"/><rect x="2" y="15" width="4" height="6" rx="1.5"/><rect x="18" y="15" width="4" height="6" rx="1.5"/></svg>
-Поддержка @VanillaHouseSupport
-</a>
-</div>
-<div style="margin-top: 16px; padding: 20px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.07);">
-<p style="font-size: 18px; color: rgb(136, 136, 136); text-align: center; line-height: 1.7;">
-По вопросам доната, жалобам и предложениям — пишите в личные сообщения
-<a href="https://t.me/VanillaHouseSupport" style="color: var(--diamond); text-decoration: none;">@VanillaHouseSupport</a>.
-Новости и обновления сервера в канале
-<a href="https://t.me/VHminecraft" style="color: var(--diamond); text-decoration: none;">@VHminecraft</a>.
-</p>
-</div>
-</section>
-<div class="footer-text">
+  <!-- DONATE -->
+  <section id="donate">
+    <div class="section-header">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 21 8.5 18 22 6 22 3 8.5"/></svg>
+      <div class="section-title">Донат-привилегии</div>
+    </div>
+    <p class="donate-note">Все привилегии выдаются один раз и остаются <span class="highlight">навсегда</span> — без подписок и продлений</p>
 
-<p style="font-family: &quot;Press Start 2P&quot;, monospace; font-size: 8px; color: rgb(51, 51, 51); margin-top: 30px;">
-© VanillaHouse · Vanilla Survival Server
-</p>
-</div>
+    <div class="donate-grid">
+
+      <!-- HUNTER -->
+      <div class="donate-card hunter">
+        <div class="donate-rank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
+          Hunter
+        </div>
+        <div class="donate-price">39 ₽</div>
+        <ul class="donate-perks">
+          <li><span class="cmd">/kit hunter</span></li>
+          <li><span class="cmd">/feed</span> — восстановить голод</li>
+          <li><span class="cmd">/wb</span> — открытие верстака</li>
+          <li>Префикс <span class="prefix-hunter">[Hunter]</span></li>
+          <li>2 точки дома</li>
+          <li>3 слота на аукционе</li>
+        </ul>
+        <a href="https://t.me/VanillaHouseSupport" class="btn-donate" target="_blank">Купить →</a>
+      </div>
+
+      <!-- MINER -->
+      <div class="donate-card miner">
+        <div class="best-value">POPULAR</div>
+        <div class="donate-rank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 6.5a4 4 0 0 0-5.6 4.6L3 18l3 3 6.9-6.9a4 4 0 0 0 4.6-5.6l-2.4 2.4-2-2 2.4-2.4z"/></svg>
+          Miner
+        </div>
+        <div class="donate-price">89 ₽</div>
+        <div class="inherited-note">+ все привилегии Hunter</div>
+        <ul class="donate-perks">
+          <li><span class="cmd">/kit miner</span></li>
+          <li><span class="cmd">/heal</span> — восстановить здоровье</li>
+          <li><span class="cmd">/ec</span> — открытие эндер-сундука</li>
+          <li>Префикс <span class="prefix-miner">[Miner]</span></li>
+          <li>3 точки дома</li>
+          <li>5 слотов на аукционе</li>
+        </ul>
+        <a href="https://t.me/VanillaHouseSupport" class="btn-donate" target="_blank">Купить →</a>
+      </div>
+
+      <!-- GRIEFER -->
+      <div class="donate-card griefer">
+        <div class="donate-rank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 4 14 11 14 10 22 20 10 13 10 13 2"/></svg>
+          Griefer
+        </div>
+        <div class="donate-price">149 ₽</div>
+        <div class="inherited-note">+ все привилегии Miner</div>
+        <ul class="donate-perks">
+          <li><span class="cmd">/kit griefer</span></li>
+          <li><span class="cmd">/gift</span> — подарок игрокам</li>
+          <li>Префикс <span class="prefix-griefer">[Griefer]</span></li>
+          <li>4 точки дома</li>
+          <li>7 слотов на аукционе</li>
+        </ul>
+        <a href="https://t.me/VanillaHouseSupport" class="btn-donate" target="_blank">Купить →</a>
+      </div>
+    </div>
+
+    <!-- YOUTUBER -->
+    <div class="donate-card youtuber">
+      <div class="youtuber-grid">
+        <div>
+          <div class="donate-rank">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="10 8 16.5 12 10 16 10 8"/></svg>
+            YouTuber
+          </div>
+          <div class="youtuber-price">БЕСПЛАТНО · по заявке</div>
+          <ul class="donate-perks">
+            <li><span class="cmd">/wb</span> <span class="cmd">/ec</span> — верстак и эндер-сундук</li>
+            <li><span class="cmd">/kit youtuber</span></li>
+            <li>Уникальный префикс <span class="highlight">[YouTube]</span></li>
+          </ul>
+        </div>
+        <div>
+          <p class="youtuber-copy">
+            Требования: <span class="highlight">5 видео</span> о сервере (без негатива),
+            <span class="highlight">от 100 подписчиков</span>, стабильная активность на канале.
+          </p>
+          <a href="https://t.me/VanillaHouseSupport" class="btn-donate-inline" target="_blank">Подать заявку в TG →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SECURITY -->
+  <section id="security">
+    <div class="section-header">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg>
+      <div class="section-title">Защита и правила</div>
+    </div>
+    <div class="rules-grid">
+
+      <div class="rule-card ok">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="8" ry="2.8"/><path d="M4 5.5V12c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8V5.5"/><path d="M4 12v6.5c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8V12"/></svg>
+        <h3>Резервные копии</h3>
+        <p>Регулярные бэкапы сервера. Даже если произойдёт краш или попытка взлома — данные восстановятся</p>
+      </div>
+
+      <div class="rule-card ok">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 13 6.5 13 9 6 14 20 16.5 13 22 13"/></svg>
+        <h3>Защита от лагов</h3>
+        <p>Жёсткие ограничения на лаг-машины и эксплойты. Стабильная работа для всех игроков</p>
+      </div>
+
+      <div class="rule-card warn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3z"/><line x1="12" y1="10" x2="12" y2="14.5"/><line x1="12" y1="17.2" x2="12" y2="17.3"/></svg>
+        <h3>Взлом / краш</h3>
+        <p>Попытка сломать сервер = <span class="danger">бан аккаунта + бан по IP</span>. Без предупреждений</p>
+      </div>
+
+      <div class="rule-card warn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>
+        <h3>Читы / чит-клиенты</h3>
+        <p>Использование читов = <span class="danger">бан по IP + блокировка аккаунта навсегда</span>. Никаких предупреждений и апелляций</p>
+      </div>
+
+      <div class="rule-card warn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 21 12 15 18"/><polyline points="9 6 3 12 9 18"/></svg>
+        <h3>Багоюз / эксплойты</h3>
+        <p>Использование багов и недочётов сервера в своих целях = <span class="danger">блокировка навсегда</span>. Если нашёл баг — <span class="highlight">сообщи в поддержку</span>, иначе бан. Распространение эксплойтов также карается перманентным баном</p>
+      </div>
+
+      <div class="rule-card ok">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4c0-.6 4-1.5 8-1.5s4 1.5 8 1.5v11c0 .6-4 1.5-8 1.5s-8-1.5-8-1.5"/></svg>
+        <h3>Гриф и оскорбления</h3>
+        <p>За гриф и оскорбления — <span class="danger">бан 7 дней</span>. Уважайте друг друга и чужие постройки</p>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CONTACTS -->
+  <section id="contacts">
+    <div class="section-header">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H8l-4 4V4z"/></svg>
+      <div class="section-title">Контакты и поддержка</div>
+    </div>
+
+    <div class="contact-bar">
+      <a href="https://t.me/VHminecraft" class="contact-btn tg" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="3" x2="10.5" y2="13.5"/><polygon points="21 3 14.5 21 10.5 13.5 3 9.5 21 3"/></svg>
+        TG-канал @VHminecraft
+      </a>
+      <a href="https://t.me/VanillaHouseSupport" class="contact-btn support" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v-5a8 8 0 0 1 16 0v5"/><rect x="2" y="15" width="4" height="6" rx="1.5"/><rect x="18" y="15" width="4" height="6" rx="1.5"/></svg>
+        Поддержка @VanillaHouseSupport
+      </a>
+    </div>
+
+    <div class="contact-note">
+      По вопросам доната, жалобам и предложениям — пишите в личные сообщения
+      <a href="https://t.me/VanillaHouseSupport">@VanillaHouseSupport</a>.
+      Новости и обновления сервера в канале
+      <a href="https://t.me/VHminecraft">@VHminecraft</a>.
+    </div>
+  </section>
+
+  <p class="footer-text">© VanillaHouse · Vanilla Survival Server</p>
+
 </main>
-<!-- Toast -->
+
 <div id="toast">IP скопирован!</div>
+
 <script>
-function copyIP() {
-const ip = document.getElementById('ip-text').textContent;
-navigator.clipboard.writeText(ip).catch(() => {});
-const t = document.getElementById('toast');
-t.classList.add('show');
-setTimeout(() => t.classList.remove('show'), 2000);
-}
+  function copyIP() {
+    const ip = document.getElementById('ip-text').textContent;
+    navigator.clipboard.writeText(ip).catch(() => {});
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
 </script>
 
-
-
-</body></html>
+</body>
+</html>
