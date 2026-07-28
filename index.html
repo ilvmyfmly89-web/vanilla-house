@@ -3,606 +3,572 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VanillaHouse — Minecraft Server</title>
-<link rel="preconnect" href="https://fonts.googleapis.com/">
-<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Vanilla House — Minecraft сервер</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #0a0d0b;
-    --bg-soft: #0d1210;
-    --surface: #121815;
-    --surface-2: #161e1a;
-    --border: rgba(230, 240, 235, 0.09);
-    --border-strong: rgba(230, 240, 235, 0.16);
-
-    --text: #e7ede9;
-    --text-dim: #8ea297;
-    --text-faint: #566159;
-
-    --green: #3ee08c;
-    --green-dim: #1f8a58;
-    --cyan: #35c9e8;
-    --violet: #b18cf5;
-
-    --radius: 14px;
-    --radius-sm: 8px;
-    --font-display: 'Space Grotesk', sans-serif;
-    --font-body: 'Inter', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+  :root{
+    --bg: #07070a;
+    --bg-panel: #121014;
+    --bg-panel-2: #17141a;
+    --blood: #8f1a26;
+    --blood-bright: #e0293f;
+    --bone: #e7ded0;
+    --ash: #8f887b;
+    --line: #2b2620;
+    --ok: #6fae55;
   }
 
-  html { scroll-behavior: smooth; }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
 
-  body {
-    font-family: var(--font-body);
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--bone);
+    font-family:'EB Garamond', serif;
+    font-size:18px;
+    line-height:1.5;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* ambient fog / scratch texture */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
     background:
-      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(62,224,140,0.08), transparent),
-      var(--bg);
-    background-attachment: fixed;
-    color: var(--text);
-    line-height: 1.55;
-    position: relative;
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(143,26,38,0.16), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 90% 100%, rgba(143,26,38,0.08), transparent 60%);
+    pointer-events:none;
+    z-index:0;
   }
-
-  /* faint grid + scanline texture */
-  body::before {
-    content: "";
-    position: fixed; inset: 0;
+  body::after{
+    content:"";
+    position:fixed; inset:0;
     background-image:
-      linear-gradient(rgba(230,240,235,0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(230,240,235,0.035) 1px, transparent 1px);
-    background-size: 44px 44px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent 75%);
-    pointer-events: none;
-    z-index: 0;
+      repeating-linear-gradient(115deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 2px, transparent 90px),
+      repeating-linear-gradient(25deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 1px, transparent 2px, transparent 130px);
+    pointer-events:none;
+    z-index:0;
+    opacity:0.6;
   }
 
-  main { max-width: 780px; margin: 0 auto; padding: 0 20px 100px; position: relative; z-index: 1; }
-  a { color: inherit; }
-  ::selection { background: rgba(62,224,140,0.28); color: #fff; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 28px; position:relative; z-index:1; }
 
-  /* ====== NAV ====== */
-  nav {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(10,13,11,0.78);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: center; gap: 2px;
-    overflow-x: auto; padding: 10px 12px;
-  }
-  nav a {
-    padding: 10px 14px;
-    font-family: var(--font-mono);
-    font-size: 12.5px; font-weight: 500;
-    color: var(--text-dim);
-    text-decoration: none; white-space: nowrap;
-    border-radius: var(--radius-sm);
-    transition: color 0.15s, background 0.15s;
-  }
-  nav a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
-  nav a.nav-cta {
-    color: #08150e;
-    background: var(--green);
-    font-weight: 700;
-    margin-left: 6px;
-  }
-  nav a.nav-cta:hover { background: #55e89e; color: #08150e; }
+  .display{ font-family:'Cinzel Decorative', serif; letter-spacing:0.02em; }
+  .mono{ font-family:'JetBrains Mono', monospace; }
 
-  /* ====== HERO ====== */
-  .hero { text-align: center; padding: 72px 16px 44px; }
+  /* ---------- HERO ---------- */
+  .hero{
+    padding: 90px 0 60px;
+    text-align:center;
+    position:relative;
+    border-bottom:1px solid var(--line);
+  }
+  .hero .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.35em;
+    text-transform:uppercase;
+    color: var(--ash);
+    margin-bottom:22px;
+  }
+  .hero h1{
+    font-size: clamp(48px, 9vw, 96px);
+    margin:0;
+    color: var(--bone);
+    text-shadow: 0 0 40px rgba(224,41,63,0.35), 0 2px 0 #000;
+    font-weight:900;
+    line-height:1;
+  }
+  .hero .sub{
+    margin-top:18px;
+    display:flex; align-items:center; justify-content:center; gap:14px;
+    font-family:'JetBrains Mono', monospace; font-size:14px; color:var(--ash); letter-spacing:0.08em;
+  }
+  .sub .divider{ color:var(--line); }
+  .status{ display:inline-flex; align-items:center; gap:8px; color:var(--ok); }
+  .status .dot{
+    width:8px; height:8px; border-radius:50%; background:var(--ok);
+    box-shadow:0 0 8px var(--ok);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ opacity:1; transform:scale(1); }
+    50%{ opacity:0.45; transform:scale(0.78); }
+  }
 
-  .status-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 6px 13px;
-    border: 1px solid var(--border-strong);
-    background: rgba(62,224,140,0.05);
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: 11px; font-weight: 500;
-    color: var(--green);
-    letter-spacing: 0.04em;
-    margin-bottom: 28px;
+  .ip-field{
+    margin: 38px auto 0;
+    max-width: 460px;
+    display:flex;
+    align-items:center;
+    border:1px solid var(--line);
+    background: linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    border-radius:4px;
+    overflow:hidden;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02), 0 20px 40px -20px rgba(0,0,0,0.7);
   }
-  .status-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 8px 1px rgba(62,224,140,0.7);
-    animation: blink 1.8s ease-in-out infinite;
+  .ip-field .label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; letter-spacing:0.2em; text-transform:uppercase;
+    color:var(--ash);
+    padding: 0 16px;
+    border-right:1px solid var(--line);
+    white-space:nowrap;
   }
-  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-  .hero-logo {
-    font-family: var(--font-display);
-    font-size: clamp(40px, 8.5vw, 62px);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    margin-bottom: 10px;
+  .ip-field input{
+    flex:1;
+    background:transparent;
+    border:none;
+    outline:none;
+    color:var(--bone);
+    font-family:'JetBrains Mono', monospace;
+    font-size:16px;
+    padding: 16px 14px;
+    letter-spacing:0.02em;
   }
-  .hero-logo .cursor {
-    display: inline-block;
-    width: 0.5em; margin-left: 2px;
-    background: var(--green);
-    animation: blink 1s steps(1) infinite;
-  }
-  .hero-sub {
-    font-family: var(--font-mono);
-    font-size: clamp(13px, 2.1vw, 14.5px);
-    color: var(--text-dim);
-    margin-bottom: 34px;
-  }
-  .hero-sub .dot { color: var(--text-faint); margin: 0 10px; }
-
-  .terminal {
-    display: inline-block; text-align: left;
-    background: var(--surface);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: 0 20px 60px -20px rgba(0,0,0,0.6);
-  }
-  .terminal-bar {
-    display: flex; align-items: center; gap: 6px;
-    padding: 9px 12px;
-    background: var(--surface-2);
-    border-bottom: 1px solid var(--border);
-  }
-  .terminal-bar span {
-    width: 9px; height: 9px; border-radius: 50%;
-    background: var(--border-strong);
-  }
-  .terminal-bar .label {
-    margin-left: 6px;
-    font-family: var(--font-mono);
-    font-size: 10.5px; color: var(--text-faint);
-    letter-spacing: 0.04em;
-  }
-  .ip-row {
-    display: flex; align-items: stretch;
-  }
-  .ip-box {
-    display: flex; align-items: center; gap: 10px;
+  .ip-field button{
+    border:none;
+    background: var(--blood);
+    color:#f4ece4;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
     padding: 16px 20px;
-    cursor: pointer;
-    flex: 1;
+    cursor:pointer;
+    transition: background .18s ease;
+    white-space:nowrap;
   }
-  .ip-box .prompt { color: var(--green); font-family: var(--font-mono); font-size: 14px; }
-  .ip-box #ip-text { font-family: var(--font-mono); font-size: 15px; font-weight: 500; color: var(--text); }
-  .ip-copy {
-    display: flex; align-items: center; gap: 6px; padding: 0 18px;
-    background: rgba(62,224,140,0.08);
-    border-left: 1px solid var(--border);
-    color: var(--green);
-    font-family: var(--font-mono);
-    font-size: 12px; font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-  .ip-copy:hover { background: rgba(62,224,140,0.16); }
-  .copy-hint { display: block; font-family: var(--font-mono); font-size: 11.5px; color: var(--text-faint); margin-top: 14px; }
+  .ip-field button:hover{ background: var(--blood-bright); }
+  .ip-field button.copied{ background: var(--ok); color:#0a0a0a; }
 
-  .hero-cta {
-    display: inline-flex; align-items: center; gap: 8px;
-    margin-top: 30px;
-    padding: 15px 28px;
-    background: var(--green); color: #08150e;
-    border: 1px solid var(--green);
-    border-radius: var(--radius-sm);
-    font-family: var(--font-mono);
-    font-weight: 700; font-size: 13px;
-    letter-spacing: 0.02em;
-    text-decoration: none;
-    transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+  /* ---------- SECTION HEADERS ---------- */
+  .section{ padding: 70px 0; }
+  .section-head{ text-align:center; margin-bottom:46px; }
+  .section-head .kicker{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px; letter-spacing:0.3em; text-transform:uppercase; color:var(--blood-bright);
+    margin-bottom:10px;
   }
-  .hero-cta:hover { background: #55e89e; box-shadow: 0 0 30px -6px rgba(62,224,140,0.55); transform: translateY(-1px); }
+  .section-head h2{
+    font-family:'Cinzel Decorative', serif;
+    font-size: clamp(30px, 4vw, 42px);
+    margin:0;
+    color:var(--bone);
+  }
+  .section-head p{ color:var(--ash); max-width:560px; margin:14px auto 0; font-style:italic; }
 
-  /* ====== SECTION LABEL ====== */
-  .eyebrow {
-    font-family: var(--font-mono);
-    font-size: 11px; font-weight: 500;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--green);
-    margin-bottom: 8px;
-    display: flex; align-items: center; gap: 8px;
+  /* ---------- TIER CARDS ---------- */
+  .tiers{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:22px;
   }
-  .eyebrow::before { content: ""; width: 14px; height: 1px; background: var(--green); opacity: 0.6; }
-  .section-title {
-    font-family: var(--font-display);
-    font-size: 27px; font-weight: 700;
-    letter-spacing: -0.01em;
-    margin-bottom: 8px;
-  }
-  .section-lede { font-size: 14px; color: var(--text-dim); margin-bottom: 30px; max-width: 46ch; }
-  .section-lede .highlight { color: var(--green); font-weight: 600; }
+  @media (max-width: 1000px){ .tiers{ grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px){ .tiers{ grid-template-columns: 1fr; } }
 
-  section { margin-top: 76px; }
+  .tier{
+    position:relative;
+    background: linear-gradient(180deg, var(--bg-panel) 0%, #0d0b0e 100%);
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+  }
+  .tier:hover{
+    transform: translateY(-6px);
+    border-color: rgba(224,41,63,0.5);
+    box-shadow: 0 20px 50px -20px rgba(224,41,63,0.35);
+  }
+  .tier-art{
+    position:relative;
+    height:230px;
+    background: radial-gradient(ellipse at 50% 20%, rgba(224,41,63,0.10), transparent 60%), #050506;
+    display:flex; align-items:center; justify-content:center;
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  .tier-art img{
+    width:100%; height:100%; object-fit:cover;
+    object-position: center 20%;
+    filter: grayscale(15%) contrast(1.05);
+    transition: transform .4s ease;
+  }
+  .tier:hover .tier-art img{ transform: scale(1.06); }
+  .tier-art::after{
+    content:"";
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, transparent 55%, rgba(7,7,10,0.95) 100%);
+  }
+  .tier-art .price-tag{
+    position:absolute; top:14px; right:14px; z-index:2;
+    background: rgba(7,7,10,0.75);
+    border:1px solid var(--blood);
+    color:var(--bone);
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    padding:6px 10px;
+    border-radius:3px;
+    letter-spacing:0.03em;
+  }
+  .tier-art .free-tag{
+    border-color: var(--ok); color:#c9e8bb;
+  }
+  .tier-art--placeholder .placeholder-crown{
+    font-size:72px;
+    color: rgba(224,41,63,0.35);
+    text-shadow: 0 0 40px rgba(224,41,63,0.25);
+    z-index:1;
+  }
+  .tier-body{
+    padding: 20px 22px 24px;
+    display:flex; flex-direction:column; flex:1;
+  }
+  .tier-name{
+    font-family:'Cinzel Decorative', serif;
+    font-size:24px;
+    color:var(--bone);
+    margin:0 0 4px;
+  }
+  .tier-duration{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ash);
+    margin-bottom:16px;
+  }
+  .perk-list{ list-style:none; margin:0 0 16px; padding:0; flex:1; }
+  .perk-list li{
+    display:flex; gap:10px; align-items:flex-start;
+    padding:7px 0;
+    border-bottom:1px dashed var(--line);
+    font-size:16px;
+    color: #d8d0c2;
+  }
+  .perk-list li:last-child{ border-bottom:none; }
+  .perk-list .cmd{
+    font-family:'JetBrains Mono', monospace;
+    color: var(--blood-bright);
+    font-size:14px;
+    white-space:nowrap;
+  }
+  .prefix{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color: var(--ash);
+    margin-bottom:18px;
+  }
+  .prefix span{
+    color: var(--bone);
+    border:1px solid var(--line);
+    padding:3px 8px;
+    border-radius:3px;
+    background: rgba(255,255,255,0.02);
+  }
+  .buy-btn{
+    display:block;
+    text-align:center;
+    text-decoration:none;
+    background: var(--blood);
+    color:#f5ece4;
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    font-size:13px;
+    padding:13px 16px;
+    border-radius:4px;
+    transition: background .18s ease, transform .18s ease;
+  }
+  .buy-btn:hover{ background:var(--blood-bright); transform: translateY(-2px); }
+  .buy-btn.free{ background: transparent; border:1px solid var(--ok); color:#c9e8bb; }
+  .buy-btn.free:hover{ background: rgba(111,174,85,0.12); }
 
-  /* ====== DONATE — Playerok-style cards ====== */
-  .donate-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
+  .yt-reqs{
+    font-size:14px; color:var(--ash); margin: 0 0 14px;
+    padding-left:18px;
   }
-  .donate-card {
-    background: var(--surface);
-    padding: 22px;
-    display: flex; flex-direction: column;
-    position: relative;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-  }
-  .donate-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--border-strong);
-    box-shadow: 0 16px 40px -16px rgba(0,0,0,0.55);
-  }
+  .yt-reqs li{ margin-bottom:4px; }
 
-  .card-top {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 18px;
+  /* ---------- RULES ---------- */
+  .rules{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:18px;
   }
-  .rank-icon {
-    width: 42px; height: 42px;
-    border-radius: 11px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-mono); font-weight: 700; font-size: 15px;
-  }
-  .donate-card.hunter .rank-icon { background: rgba(62,224,140,0.1); color: var(--green); border: 1px solid rgba(62,224,140,0.22); }
-  .donate-card.miner .rank-icon { background: rgba(53,201,232,0.1); color: var(--cyan); border: 1px solid rgba(53,201,232,0.22); }
-  .donate-card.griefer .rank-icon { background: rgba(177,140,245,0.1); color: var(--violet); border: 1px solid rgba(177,140,245,0.22); }
+  @media (max-width: 900px){ .rules{ grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px){ .rules{ grid-template-columns: 1fr; } }
 
-  .best-value {
-    font-family: var(--font-mono);
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 0.05em;
-    color: #08150e;
-    background: var(--green);
-    padding: 4px 9px;
-    border-radius: 999px;
+  .rule-card{
+    background: var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:22px;
+    position:relative;
   }
+  .rule-card .icon{
+    width:34px; height:34px;
+    border:1px solid var(--blood);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:14px;
+    color:var(--blood-bright);
+    font-size:16px;
+  }
+  .rule-card h3{
+    font-family:'Cinzel Decorative', serif;
+    font-size:19px;
+    margin:0 0 8px;
+    color:var(--bone);
+  }
+  .rule-card p{
+    margin:0;
+    font-size:15.5px;
+    color:#c9c2b6;
+  }
+  .rule-card b{ color: var(--blood-bright); font-weight:600; }
+  .rule-card .warn{ color:#e8a13b; font-weight:600; }
 
-  .donate-rank {
-    font-family: var(--font-display);
-    font-size: 19px; font-weight: 700;
-    margin-bottom: 2px;
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    padding: 40px 0 60px;
+    text-align:center;
+    color:var(--ash);
+    font-size:14px;
   }
-  .donate-card.miner .donate-rank { color: var(--cyan); }
-  .donate-card.griefer .donate-rank { color: var(--violet); }
+  .tg-fab{
+    position:fixed;
+    right:26px; bottom:26px;
+    width:58px; height:58px;
+    border-radius:50%;
+    background: linear-gradient(180deg, #2aa9dc, #1c8ecf);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 12px 30px -6px rgba(42,169,220,0.55), 0 0 0 1px rgba(255,255,255,0.08);
+    z-index:20;
+    transition: transform .2s ease;
+    text-decoration:none;
+  }
+  .tg-fab:hover{ transform: scale(1.08) translateY(-2px); }
+  .tg-fab svg{ width:28px; height:28px; }
 
-  .donate-price { font-family: var(--font-mono); font-size: 26px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
-  .inherited-note { font-size: 12px; color: var(--text-faint); margin-bottom: 14px; }
-  .donate-rank + .donate-price { margin-top: 12px; }
+  .footer-links{
+    display:flex; gap:22px; justify-content:center; margin-top:14px;
+    font-family:'JetBrains Mono', monospace; font-size:12.5px;
+  }
+  .footer-links a{ color:var(--ash); text-decoration:none; border-bottom:1px solid transparent; }
+  .footer-links a:hover{ color:var(--bone); border-color:var(--blood-bright); }
 
-  .donate-perks { list-style: none; margin: 14px 0 22px; flex-grow: 1; }
-  .donate-perks li {
-    font-size: 13.5px; color: var(--text-dim);
-    padding: 7px 0;
-    display: flex; gap: 9px; align-items: flex-start;
-  }
-  .donate-perks li::before {
-    content: "✓";
-    color: var(--green);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    line-height: 1.6;
-    flex-shrink: 0;
-  }
-
-  .cmd {
-    font-family: var(--font-mono);
-    background: rgba(230,240,235,0.06);
-    padding: 1px 6px; border-radius: 4px;
-    font-size: 12.5px; color: var(--text);
-  }
-
-  .btn-donate {
-    display: block; text-align: center;
-    padding: 12px; border-radius: var(--radius-sm);
-    font-family: var(--font-mono);
-    font-size: 13px; font-weight: 700;
-    text-decoration: none;
-    border: 1px solid var(--border-strong);
-    color: var(--text);
-    transition: background 0.15s, border-color 0.15s, color 0.15s;
-  }
-  .donate-card.hunter .btn-donate:hover { background: var(--green); border-color: var(--green); color: #08150e; }
-  .donate-card.miner .btn-donate:hover { background: var(--cyan); border-color: var(--cyan); color: #08150e; }
-  .donate-card.griefer .btn-donate:hover { background: var(--violet); border-color: var(--violet); color: #14091f; }
-
-  .donate-card.miner {
-    border-color: rgba(53,201,232,0.28);
-    background: linear-gradient(180deg, rgba(53,201,232,0.05), var(--surface) 40%);
-  }
-  .donate-card.miner .btn-donate { background: var(--cyan); border-color: var(--cyan); color: #08150e; }
-  .donate-card.miner .btn-donate:hover { background: #63d8f2; }
-
-  .donate-note {
-    margin-top: 20px;
-    font-size: 13px; color: var(--text-faint);
-  }
-  .donate-note a { color: var(--green); text-decoration: underline; }
-
-  .youtuber-row {
-    margin-top: 16px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 26px 28px;
-    background: var(--surface);
-    display: grid;
-    grid-template-columns: 1fr 1.3fr;
-    gap: 24px;
-  }
-  .youtuber-row .yt-title {
-    font-family: var(--font-display); font-size: 19px; font-weight: 700; color: var(--text);
-    margin-bottom: 6px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .youtuber-row .yt-title::before { content: "$"; color: var(--green); font-family: var(--font-mono); }
-  .youtuber-row .yt-price { font-family: var(--font-mono); font-size: 12.5px; font-weight: 500; color: var(--text-faint); margin-bottom: 10px; }
-  .youtuber-row .yt-desc { font-size: 13px; color: var(--text-dim); margin-bottom: 18px; }
-  .youtuber-row .yt-desc span { color: var(--green); font-weight: 600; }
-  .youtuber-row a.yt-apply {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 13px; font-weight: 700;
-    padding: 12px 22px;
-    background: transparent; color: var(--green);
-    border: 1px solid var(--green-dim);
-    border-radius: var(--radius-sm);
-    text-decoration: none; white-space: nowrap;
-    transition: background 0.15s, color 0.15s;
-  }
-  .youtuber-row a.yt-apply:hover { background: var(--green); color: #08150e; }
-  .youtuber-row .donate-perks li::before { content: "›"; color: var(--text-faint); }
-
-  @media (max-width: 600px) {
-    .youtuber-row { grid-template-columns: 1fr; }
-  }
-
-  /* ====== SHORT INFO ====== */
-  .info-columns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-  .info-card {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 22px;
-    background: var(--surface);
-  }
-  .info-card h3 {
-    font-family: var(--font-mono);
-    font-size: 12px; font-weight: 600;
-    letter-spacing: 0.05em; text-transform: uppercase;
-    color: var(--text-faint);
-    margin-bottom: 14px;
-  }
-  .info-list { list-style: none; }
-  .info-list li {
-    font-size: 13.5px; color: var(--text-dim);
-    padding: 8px 0; border-top: 1px solid var(--border);
-    display: flex; gap: 9px;
-  }
-  .info-list li:first-child { border-top: none; padding-top: 0; }
-  .info-list.warn li::before { content: "✕"; color: var(--violet); font-family: var(--font-mono); font-size: 11px; }
-  .info-list.ok li::before { content: "✓"; color: var(--green); font-family: var(--font-mono); font-size: 11px; }
-  .info-list li span { color: var(--text); font-weight: 600; }
-
-  @media (max-width: 600px) {
-    .info-columns { grid-template-columns: 1fr; }
+  @media (prefers-reduced-motion: reduce){
+    .status .dot{ animation:none; }
+    *{ transition:none !important; }
   }
 
-  /* ====== CONTACTS ====== */
-  .contact-bar { display: flex; flex-wrap: wrap; gap: 10px; }
-  .contact-btn {
-    padding: 13px 20px;
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-sm);
-    font-family: var(--font-mono);
-    font-size: 13px; font-weight: 500;
-    text-decoration: none;
-    color: var(--text);
-    transition: background 0.15s, border-color 0.15s;
+  :focus-visible{
+    outline: 2px solid var(--blood-bright);
+    outline-offset: 2px;
   }
-  .contact-btn:hover { background: rgba(62,224,140,0.08); border-color: var(--green-dim); color: var(--green); }
-
-  footer {
-    margin-top: 90px;
-    padding-top: 22px;
-    border-top: 1px solid var(--border);
-    display: flex; justify-content: space-between; align-items: center;
-    flex-wrap: wrap; gap: 8px;
-    font-family: var(--font-mono);
-    font-size: 12px; color: var(--text-faint);
-  }
-
-  /* Toast */
-  #toast {
-    position: fixed; bottom: 26px; left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--surface); color: var(--green);
-    border: 1px solid var(--green-dim);
-    padding: 11px 20px; border-radius: var(--radius-sm);
-    font-family: var(--font-mono);
-    font-size: 13px; font-weight: 600;
-    z-index: 999; opacity: 0;
-    transition: opacity 0.25s, transform 0.25s;
-    pointer-events: none;
-  }
-  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
 
-<nav>
-  <a href="#donate">Донат</a>
-  <a href="#rules">Правила</a>
-  <a href="#contacts">Контакты</a>
-  <a href="#donate" class="nav-cta">Купить →</a>
-</nav>
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Minecraft · выживание без правил</div>
+    <h1 class="display">Vanilla House</h1>
+    <div class="sub">
+      <span class="mono">ВЕРСИЯ 1.21.11</span>
+      <span class="divider">/</span>
+      <span class="status"><span class="dot"></span>ОНЛАЙН</span>
+    </div>
 
-<main>
+    <div class="ip-field">
+      <span class="label">IP сервера</span>
+      <input id="ipInput" type="text" value="today.vanilla.house" readonly aria-label="IP адрес сервера">
+      <button id="copyBtn" type="button">Копировать</button>
+    </div>
+  </div>
+</section>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="status-badge"><span class="status-dot"></span>Сервер онлайн</div>
-    <div class="hero-logo">VanillaHouse<span class="cursor">&nbsp;</span></div>
-    <div class="hero-sub">Ванильное выживание<span class="dot">·</span>1.21.11<span class="dot">·</span>без читов и хаоса</div>
+<section class="section" id="tiers">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Донат-привилегии</div>
+      <h2>Выбери свою роль</h2>
+      <p>Каждая привилегия навсегда — плати один раз и получай доступ до конца существования сервера.</p>
+    </div>
 
-    <div class="terminal">
-      <div class="terminal-bar">
-        <span></span><span></span><span></span>
-        <span class="label">connect.sh</span>
-      </div>
-      <div class="ip-row">
-        <div class="ip-box" onclick="copyIP()" title="Нажми чтобы скопировать">
-          <span class="prompt">$</span>
-          <span id="ip-text">today.vanilla.house</span>
+    <div class="tiers">
+
+      <!-- HUNTER -->
+      <article class="tier">
+        <div class="tier-art">
+          <img src="assets/hunter.png" alt="Hunter — привилегия Vanilla House">
+          <span class="price-tag">39₽</span>
         </div>
-        <div class="ip-copy" onclick="copyIP()">copy</div>
-      </div>
-    </div>
-    <span class="copy-hint">// нажми, чтобы скопировать адрес</span>
-
-    <div><a href="https://t.me/VanillaHouseSupport" class="hero-cta" target="_blank">Купить привилегию →</a></div>
-  </section>
-
-  <!-- DONATE — MAIN FOCUS -->
-  <section id="donate">
-    <div class="eyebrow">Поддержать сервер</div>
-    <div class="section-title">Донат-привилегии</div>
-    <p class="section-lede">Покупаются один раз и остаются <span class="highlight">навсегда</span> — без подписок и продлений.</p>
-
-    <div class="donate-grid">
-      <div class="donate-card hunter">
-        <div class="card-top">
-          <div class="rank-icon">H</div>
+        <div class="tier-body">
+          <h3 class="tier-name display">Hunter</h3>
+          <div class="tier-duration">Навсегда</div>
+          <ul class="perk-list">
+            <li><span class="cmd">/wb</span> — Верстак</li>
+            <li><span class="cmd">/kit hunter</span> — Кит Хантера</li>
+          </ul>
+          <div class="prefix">Префикс <span>[ Hunter ]</span></div>
+          <a class="buy-btn" href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener">Купить</a>
         </div>
-        <div class="donate-rank">Hunter</div>
-        <div class="donate-price">39 ₽</div>
-        <ul class="donate-perks">
-          <li><span class="cmd">/kit hunter</span></li>
-          <li><span class="cmd">/feed</span> — восстановить голод</li>
-          <li><span class="cmd">/wb</span> — верстак</li>
-          <li>Префикс [Hunter]</li>
-          <li>2 точки дома</li>
-        </ul>
-        <a href="https://t.me/VanillaHouseSupport" class="btn-donate" target="_blank">Купить →</a>
-      </div>
+      </article>
 
-      <div class="donate-card miner">
-        <div class="card-top">
-          <div class="rank-icon">M</div>
-          <div class="best-value">ПОПУЛЯРНЫЙ</div>
+      <!-- MINER -->
+      <article class="tier">
+        <div class="tier-art">
+          <img src="assets/miner.png" alt="Miner — привилегия Vanilla House">
+          <span class="price-tag">89₽</span>
         </div>
-        <div class="donate-rank">Miner</div>
-        <div class="donate-price">89 ₽</div>
-        <div class="inherited-note">+ всё из Hunter</div>
-        <ul class="donate-perks">
-          <li><span class="cmd">/kit miner</span></li>
-          <li><span class="cmd">/heal</span> — восстановить здоровье</li>
-          <li><span class="cmd">/ec</span> — эндер-сундук</li>
-          <li>Префикс [Miner]</li>
-          <li>3 точки дома</li>
-        </ul>
-        <a href="https://t.me/VanillaHouseSupport" class="btn-donate" target="_blank">Купить →</a>
-      </div>
-
-      <div class="donate-card griefer">
-        <div class="card-top">
-          <div class="rank-icon">G</div>
+        <div class="tier-body">
+          <h3 class="tier-name display">Miner</h3>
+          <div class="tier-duration">Навсегда</div>
+          <ul class="perk-list">
+            <li><span class="cmd">/wb</span> — Верстак</li>
+            <li><span class="cmd">/ec</span> — Эндер сундук</li>
+            <li><span class="cmd">/kit miner</span> — Кит Майнера</li>
+          </ul>
+          <div class="prefix">Префикс <span>[ Miner ]</span></div>
+          <a class="buy-btn" href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener">Купить</a>
         </div>
-        <div class="donate-rank">Griefer</div>
-        <div class="donate-price">149 ₽</div>
-        <div class="inherited-note">+ всё из Miner</div>
-        <ul class="donate-perks">
-          <li><span class="cmd">/kit griefer</span></li>
-          <li><span class="cmd">/gift</span> — подарок игроку</li>
-          <li>Префикс [Griefer]</li>
-          <li>4 точки дома</li>
-        </ul>
-        <a href="https://t.me/VanillaHouseSupport" class="btn-donate" target="_blank">Купить →</a>
-      </div>
+      </article>
+
+      <!-- GRIEFER -->
+      <article class="tier">
+        <div class="tier-art">
+          <img src="assets/griefer.png" alt="Griefer — привилегия Vanilla House">
+          <span class="price-tag">149₽</span>
+        </div>
+        <div class="tier-body">
+          <h3 class="tier-name display">Griefer</h3>
+          <div class="tier-duration">Навсегда</div>
+          <ul class="perk-list">
+            <li><span class="cmd">/wb</span> — Верстак</li>
+            <li><span class="cmd">/ec</span> — Эндер сундук</li>
+            <li><span class="cmd">/heal</span> — Регенерация</li>
+            <li><span class="cmd">/kit griefer</span> — Кит Грифера</li>
+          </ul>
+          <div class="prefix">Префикс <span>[ Griefer ]</span></div>
+          <a class="buy-btn" href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener">Купить</a>
+        </div>
+      </article>
+
+      <!-- YOUTUBER -->
+      <article class="tier">
+        <div class="tier-art tier-art--placeholder">
+          <span class="placeholder-crown">♛</span>
+          <span class="price-tag free-tag">Бесплатно</span>
+        </div>
+        <div class="tier-body">
+          <h3 class="tier-name display">Youtuber</h3>
+          <div class="tier-duration">Навсегда · по заявке</div>
+          <ul class="yt-reqs">
+            <li>От 100 подписчиков на YouTube (300 в TikTok)</li>
+            <li>От 10 роликов про сервер, без оскорблений</li>
+            <li>Стабильный актив на сервере</li>
+          </ul>
+          <ul class="perk-list">
+            <li><span class="cmd">/wb</span> — Верстак</li>
+            <li><span class="cmd">/ec</span> — Эндер сундук</li>
+            <li><span class="cmd">/heal</span> — Регенерация</li>
+            <li><span class="cmd">/kit youtuber</span> — Кит Ютубера</li>
+          </ul>
+          <div class="prefix">Префикс <span>[ Youtuber ]</span></div>
+          <a class="buy-btn free" href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener">Подать заявку</a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section class="section" id="rules">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Безопасность</div>
+      <h2>Защита и правила</h2>
     </div>
 
-    <div class="youtuber-row">
-      <div>
-        <div class="yt-title">YouTuber</div>
-        <div class="yt-price">Бесплатно · по заявке</div>
-        <div class="yt-desc"><span>5 видео</span> о сервере без негатива, <span>от 100 подписчиков</span>, стабильная активность на канале.</div>
-        <a href="https://t.me/VanillaHouseSupport" class="yt-apply" target="_blank">Подать заявку →</a>
+    <div class="rules">
+      <div class="rule-card">
+        <div class="icon">⛁</div>
+        <h3>Резервные копии</h3>
+        <p>Регулярные бэкапы сервера. Даже если произойдёт краш или попытка взлома — данные восстановятся.</p>
       </div>
-      <ul class="donate-perks" style="margin-bottom:0;">
-        <li><span class="cmd">/kit youtuber</span></li>
-        <li><span class="cmd">/wb</span> — верстак</li>
-        <li><span class="cmd">/ec</span> — эндер-сундук</li>
-        <li>Уникальный префикс [YouTube]</li>
-        <li>Все привилегии ранга Griefer</li>
-        <li>Упоминание канала в TG-канале сервера</li>
-      </ul>
-    </div>
 
-    <p class="donate-note">Все вопросы по оплате — в поддержку <a href="https://t.me/VanillaHouseSupport">@VanillaHouseSupport</a>.</p>
-  </section>
-
-  <!-- SHORT RULES -->
-  <section id="rules">
-    <div class="eyebrow">Коротко</div>
-    <div class="section-title">Правила и защита</div>
-    <div class="info-columns">
-      <div class="info-card">
-        <h3>Что есть</h3>
-        <ul class="info-list ok">
-          <li>Регулярные <span>бэкапы</span> сервера</li>
-          <li>Защита от лаг-машин и эксплойтов</li>
-          <li>Отзывчивая поддержка</li>
-          <li>Честная модерация без фаворитизма</li>
-        </ul>
+      <div class="rule-card">
+        <div class="icon">∿</div>
+        <h3>Защита от лагов</h3>
+        <p>Жёсткие ограничения на лаг-машины и эксплойты. Стабильная работа для всех игроков.</p>
       </div>
-      <div class="info-card">
-        <h3>Что нельзя</h3>
-        <ul class="info-list warn">
-          <li>Читы — <span>бан навсегда</span></li>
-          <li>Взлом / краш сервера — <span>бан навсегда</span></li>
-          <li>Багоюз без репорта — <span>бан навсегда</span></li>
-          <li>Гриф и оскорбления — <span>бан 7 дней</span></li>
-        </ul>
+
+      <div class="rule-card">
+        <div class="icon">⚠</div>
+        <h3>Взлом / краш</h3>
+        <p>Попытка сломать сервер = <b>бан аккаунта + бан по IP</b>. Без предупреждений.</p>
+      </div>
+
+      <div class="rule-card">
+        <div class="icon">⛔</div>
+        <h3>Читы / чит-клиенты</h3>
+        <p>Использование читов = <b>бан по IP + блокировка аккаунта навсегда</b>. Никаких предупреждений и апелляций.</p>
+      </div>
+
+      <div class="rule-card">
+        <div class="icon">⟨/⟩</div>
+        <h3>Багюз / эксплойты</h3>
+        <p>Использование багов и недочётов сервера в своих целях = <b>блокировка навсегда</b>. Если нашёл баг — <span class="warn">сообщи в поддержку</span>, иначе бан. Распространение эксплойтов также карается перманентным баном.</p>
+      </div>
+
+      <div class="rule-card">
+        <div class="icon">✎</div>
+        <h3>Гриф и оскорбления</h3>
+        <p>За гриф и оскорбления — <b>бан 7 дней</b>. Уважайте друг друга и чужие постройки.</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- CONTACTS -->
-  <section id="contacts">
-    <div class="eyebrow">Связь</div>
-    <div class="section-title">Контакты</div>
-    <div class="contact-bar">
-      <a href="https://t.me/VHminecraft" class="contact-btn" target="_blank">Новости @VHminecraft</a>
-      <a href="https://t.me/VanillaHouseSupport" class="contact-btn" target="_blank">Поддержка @VanillaHouseSupport</a>
+<footer>
+  <div class="wrap">
+    <div>Vanilla House · today.vanilla.house</div>
+    <div class="footer-links">
+      <a href="https://t.me/VHminecraft" target="_blank" rel="noopener">Telegram-канал</a>
+      <a href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener">Поддержка</a>
     </div>
-  </section>
+  </div>
+</footer>
 
-  <footer>
-    <span>© VanillaHouse</span>
-    <span>Vanilla Survival Server</span>
-  </footer>
-
-</main>
-
-<div id="toast">IP скопирован!</div>
+<a class="tg-fab" href="https://t.me/VHminecraft" target="_blank" rel="noopener" aria-label="Telegram-канал Vanilla House">
+  <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#fff" d="M180 71l-19 116c-1.4 6.4-5.2 8-10.6 5l-29.4-21.7-14.2 13.7c-1.6 1.6-2.9 2.9-6 2.9l2.1-30.2 55-49.7c2.4-2.1-.5-3.3-3.7-1.2l-68 42.8-29.3-9.2c-6.4-2-6.5-6.4 1.3-9.5l114.5-44.1c5.3-1.9 9.9 1.3 8.3 9.2z"/>
+  </svg>
+</a>
 
 <script>
-  function copyIP() {
-    const ip = document.getElementById('ip-text').textContent;
-    navigator.clipboard.writeText(ip).catch(() => {});
-    const t = document.getElementById('toast');
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2000);
-  }
+  const copyBtn = document.getElementById('copyBtn');
+  const ipInput = document.getElementById('ipInput');
+  copyBtn.addEventListener('click', async () => {
+    try{
+      await navigator.clipboard.writeText(ipInput.value);
+    }catch(e){
+      ipInput.select();
+      document.execCommand('copy');
+    }
+    const original = copyBtn.textContent;
+    copyBtn.textContent = 'Скопировано';
+    copyBtn.classList.add('copied');
+    setTimeout(()=>{
+      copyBtn.textContent = original;
+      copyBtn.classList.remove('copied');
+    }, 1600);
+  });
 </script>
 
 </body>
