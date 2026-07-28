@@ -4,629 +4,592 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VanillaHouse — Minecraft Server</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #0b0f0d;
-    --bg-elevated: #101512;
-    --panel: #131a16;
-    --line: rgba(255,255,255,0.07);
-    --text: #eef1ef;
-    --text-dim: #94a29b;
-    --text-faint: #5b665f;
+    --bg: #0a0d0b;
+    --bg-soft: #0d1210;
+    --surface: #121815;
+    --surface-2: #161e1a;
+    --border: rgba(230, 240, 235, 0.09);
+    --border-strong: rgba(230, 240, 235, 0.16);
 
-    --moss: #5fb98a;
-    --moss-dim: #3a7a5c;
-    --amber: #e8b04b;
-    --clay: #d97757;
-    --sky: #6fb1d6;
+    --text: #e7ede9;
+    --text-dim: #8ea297;
+    --text-faint: #566159;
+
+    --green: #3ee08c;
+    --green-dim: #1f8a58;
+    --cyan: #35c9e8;
+    --violet: #b18cf5;
 
     --radius: 14px;
-    --font-display: 'Manrope', sans-serif;
+    --radius-sm: 8px;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
   }
 
   html { scroll-behavior: smooth; }
 
   body {
-    font-family: var(--font-display);
-    background: var(--bg);
+    font-family: var(--font-body);
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(62,224,140,0.08), transparent),
+      var(--bg);
+    background-attachment: fixed;
     color: var(--text);
-    line-height: 1.5;
+    line-height: 1.55;
+    position: relative;
   }
 
-  main {
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 0 20px 80px;
+  /* faint grid + scanline texture */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(230,240,235,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(230,240,235,0.035) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent 75%);
+    pointer-events: none;
+    z-index: 0;
   }
 
+  main { max-width: 780px; margin: 0 auto; padding: 0 20px 100px; position: relative; z-index: 1; }
   a { color: inherit; }
+  ::selection { background: rgba(62,224,140,0.28); color: #fff; }
 
   /* ====== NAV ====== */
   nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(11,15,13,0.85);
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,13,11,0.78);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--line);
-    display: flex;
-    justify-content: center;
-    gap: 4px;
-    overflow-x: auto;
-    padding: 4px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center; gap: 2px;
+    overflow-x: auto; padding: 10px 12px;
   }
   nav a {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 14px 16px;
-    font-size: 13px;
-    font-weight: 600;
+    padding: 10px 14px;
+    font-family: var(--font-mono);
+    font-size: 12.5px; font-weight: 500;
     color: var(--text-dim);
-    text-decoration: none;
-    white-space: nowrap;
-    border-radius: 8px;
+    text-decoration: none; white-space: nowrap;
+    border-radius: var(--radius-sm);
     transition: color 0.15s, background 0.15s;
   }
   nav a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
-  nav svg { width: 14px; height: 14px; opacity: 0.8; }
+  nav a.nav-cta {
+    color: #08150e;
+    background: var(--green);
+    font-weight: 700;
+    margin-left: 6px;
+  }
+  nav a.nav-cta:hover { background: #55e89e; color: #08150e; }
 
   /* ====== HERO ====== */
-  .hero {
-    text-align: center;
-    padding: 72px 16px 48px;
-  }
+  .hero { text-align: center; padding: 72px 16px 44px; }
+
   .status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 14px;
-    border: 1px solid rgba(95,185,138,0.35);
-    background: rgba(95,185,138,0.08);
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 13px;
+    border: 1px solid var(--border-strong);
+    background: rgba(62,224,140,0.05);
     border-radius: 999px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--moss);
-    letter-spacing: 0.02em;
+    font-family: var(--font-mono);
+    font-size: 11px; font-weight: 500;
+    color: var(--green);
+    letter-spacing: 0.04em;
     margin-bottom: 28px;
   }
   .status-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--moss);
-    box-shadow: 0 0 8px var(--moss);
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px 1px rgba(62,224,140,0.7);
     animation: blink 1.8s ease-in-out infinite;
   }
-  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
   .hero-logo {
-    font-size: clamp(38px, 8vw, 64px);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    background: linear-gradient(135deg, #fff 30%, var(--moss) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    font-family: var(--font-display);
+    font-size: clamp(40px, 8.5vw, 62px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
     margin-bottom: 10px;
   }
+  .hero-logo .cursor {
+    display: inline-block;
+    width: 0.5em; margin-left: 2px;
+    background: var(--green);
+    animation: blink 1s steps(1) infinite;
+  }
   .hero-sub {
-    font-size: clamp(14px, 2.5vw, 17px);
-    color: var(--text-dim);
-    font-weight: 500;
-    margin-bottom: 4px;
-  }
-  .hero-version {
-    font-size: 13px;
-    color: var(--sky);
     font-family: var(--font-mono);
-    margin-bottom: 32px;
+    font-size: clamp(13px, 2.1vw, 14.5px);
+    color: var(--text-dim);
+    margin-bottom: 34px;
   }
+  .hero-sub .dot { color: var(--text-faint); margin: 0 10px; }
 
+  .terminal {
+    display: inline-block; text-align: left;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 20px 60px -20px rgba(0,0,0,0.6);
+  }
+  .terminal-bar {
+    display: flex; align-items: center; gap: 6px;
+    padding: 9px 12px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+  }
+  .terminal-bar span {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--border-strong);
+  }
+  .terminal-bar .label {
+    margin-left: 6px;
+    font-family: var(--font-mono);
+    font-size: 10.5px; color: var(--text-faint);
+    letter-spacing: 0.04em;
+  }
+  .ip-row {
+    display: flex; align-items: stretch;
+  }
   .ip-box {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 14px 22px;
+    display: flex; align-items: center; gap: 10px;
+    padding: 16px 20px;
     cursor: pointer;
-    transition: border-color 0.2s, transform 0.15s;
+    flex: 1;
   }
-  .ip-box:hover { border-color: var(--moss); transform: translateY(-1px); }
-  .ip-box .label { font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.08em; }
-  .ip-box #ip-text { font-family: var(--font-mono); font-size: 16px; font-weight: 600; color: #fff; }
-  .ip-box svg { width: 15px; height: 15px; color: var(--text-faint); }
-  .copy-hint { display: block; font-size: 12px; color: var(--text-faint); margin-top: 10px; }
+  .ip-box .prompt { color: var(--green); font-family: var(--font-mono); font-size: 14px; }
+  .ip-box #ip-text { font-family: var(--font-mono); font-size: 15px; font-weight: 500; color: var(--text); }
+  .ip-copy {
+    display: flex; align-items: center; gap: 6px; padding: 0 18px;
+    background: rgba(62,224,140,0.08);
+    border-left: 1px solid var(--border);
+    color: var(--green);
+    font-family: var(--font-mono);
+    font-size: 12px; font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .ip-copy:hover { background: rgba(62,224,140,0.16); }
+  .copy-hint { display: block; font-family: var(--font-mono); font-size: 11.5px; color: var(--text-faint); margin-top: 14px; }
 
-  /* ====== SECTION HEADERS ====== */
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 64px 0 24px;
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 30px;
+    padding: 15px 28px;
+    background: var(--green); color: #08150e;
+    border: 1px solid var(--green);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-weight: 700; font-size: 13px;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
   }
-  .section-header svg { width: 20px; height: 20px; color: var(--moss); }
-  .section-title { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
-  .section-lede {
-    font-size: 14px;
-    color: var(--text-dim);
-    margin: -14px 0 20px;
-  }
+  .hero-cta:hover { background: #55e89e; box-shadow: 0 0 30px -6px rgba(62,224,140,0.55); transform: translateY(-1px); }
 
-  /* ====== FEATURES ====== */
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 12px;
+  /* ====== SECTION LABEL ====== */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
   }
-  .feature-card {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 22px;
+  .eyebrow::before { content: ""; width: 14px; height: 1px; background: var(--green); opacity: 0.6; }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 27px; font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
   }
-  .feature-card svg { width: 22px; height: 22px; color: var(--moss); margin-bottom: 14px; }
-  .feature-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-  .feature-card p { font-size: 14px; color: var(--text-dim); }
+  .section-lede { font-size: 14px; color: var(--text-dim); margin-bottom: 30px; max-width: 46ch; }
+  .section-lede .highlight { color: var(--green); font-weight: 600; }
 
-  /* ====== DIVIDER ====== */
-  .divider {
-    height: 1px;
-    background: var(--line);
-    margin: 56px 0;
-  }
+  section { margin-top: 76px; }
 
-  /* ====== DONATE ====== */
-  .donate-note {
-    font-size: 14px;
-    color: var(--text-dim);
-    margin: -14px 0 20px;
-  }
-  .donate-note .highlight { color: var(--amber); font-weight: 600; }
-
+  /* ====== DONATE — Playerok-style cards ====== */
   .donate-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    gap: 14px;
-    margin-bottom: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
   }
   .donate-card {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 24px;
+    background: var(--surface);
+    padding: 22px;
+    display: flex; flex-direction: column;
     position: relative;
-    display: flex;
-    flex-direction: column;
-    transition: border-color 0.2s, transform 0.2s;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
   }
-  .donate-card:hover { transform: translateY(-3px); }
-  .donate-card.hunter:hover { border-color: var(--sky); }
-  .donate-card.miner:hover { border-color: var(--amber); }
-  .donate-card.griefer:hover { border-color: var(--clay); }
+  .donate-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-strong);
+    box-shadow: 0 16px 40px -16px rgba(0,0,0,0.55);
+  }
+
+  .card-top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .rank-icon {
+    width: 42px; height: 42px;
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-weight: 700; font-size: 15px;
+  }
+  .donate-card.hunter .rank-icon { background: rgba(62,224,140,0.1); color: var(--green); border: 1px solid rgba(62,224,140,0.22); }
+  .donate-card.miner .rank-icon { background: rgba(53,201,232,0.1); color: var(--cyan); border: 1px solid rgba(53,201,232,0.22); }
+  .donate-card.griefer .rank-icon { background: rgba(177,140,245,0.1); color: var(--violet); border: 1px solid rgba(177,140,245,0.22); }
 
   .best-value {
-    position: absolute;
-    top: -11px; left: 24px;
-    background: var(--amber);
-    color: #1a1300;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    padding: 4px 10px;
+    font-family: var(--font-mono);
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #08150e;
+    background: var(--green);
+    padding: 4px 9px;
     border-radius: 999px;
   }
 
   .donate-rank {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 17px; font-weight: 700;
-    margin-bottom: 6px;
+    font-family: var(--font-display);
+    font-size: 19px; font-weight: 700;
+    margin-bottom: 2px;
   }
-  .donate-rank svg { width: 18px; height: 18px; }
-  .donate-card.hunter .donate-rank svg { color: var(--sky); }
-  .donate-card.miner .donate-rank svg { color: var(--amber); }
-  .donate-card.griefer .donate-rank svg { color: var(--clay); }
+  .donate-card.miner .donate-rank { color: var(--cyan); }
+  .donate-card.griefer .donate-rank { color: var(--violet); }
 
-  .donate-price { font-size: 26px; font-weight: 800; margin-bottom: 4px; }
-  .inherited-note { font-size: 12px; color: var(--text-faint); font-style: italic; margin-bottom: 16px; }
+  .donate-price { font-family: var(--font-mono); font-size: 26px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
+  .inherited-note { font-size: 12px; color: var(--text-faint); margin-bottom: 14px; }
+  .donate-rank + .donate-price { margin-top: 12px; }
 
-  .donate-perks { list-style: none; margin-bottom: 20px; flex-grow: 1; }
+  .donate-perks { list-style: none; margin: 14px 0 22px; flex-grow: 1; }
   .donate-perks li {
-    font-size: 14px; color: var(--text-dim);
+    font-size: 13.5px; color: var(--text-dim);
     padding: 7px 0;
-    border-bottom: 1px solid var(--line);
-    display: flex; gap: 8px;
+    display: flex; gap: 9px; align-items: flex-start;
   }
-  .donate-perks li:last-child { border-bottom: none; }
-  .donate-perks li::before { content: '＋'; color: var(--text-faint); flex-shrink: 0; }
+  .donate-perks li::before {
+    content: "✓";
+    color: var(--green);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    flex-shrink: 0;
+  }
 
   .cmd {
     font-family: var(--font-mono);
-    background: rgba(255,255,255,0.06);
-    padding: 1px 6px;
-    border-radius: 4px;
-    font-size: 13px;
-    color: #a7e5b6;
+    background: rgba(230,240,235,0.06);
+    padding: 1px 6px; border-radius: 4px;
+    font-size: 12.5px; color: var(--text);
   }
-  .prefix-hunter { color: var(--sky); font-weight: 600; }
-  .prefix-miner { color: var(--amber); font-weight: 600; }
-  .prefix-griefer { color: var(--clay); font-weight: 600; }
 
   .btn-donate {
     display: block; text-align: center;
-    padding: 12px; border-radius: 10px;
-    font-size: 14px; font-weight: 700;
+    padding: 12px; border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 13px; font-weight: 700;
     text-decoration: none;
-    border: 1px solid;
-    transition: background 0.15s, color 0.15s;
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
   }
-  .donate-card.hunter .btn-donate { color: var(--sky); border-color: var(--sky); }
-  .donate-card.hunter .btn-donate:hover { background: var(--sky); color: #06202c; }
-  .donate-card.miner .btn-donate { color: var(--amber); border-color: var(--amber); }
-  .donate-card.miner .btn-donate:hover { background: var(--amber); color: #241a04; }
-  .donate-card.griefer .btn-donate { color: var(--clay); border-color: var(--clay); }
-  .donate-card.griefer .btn-donate:hover { background: var(--clay); color: #2a0f08; }
+  .donate-card.hunter .btn-donate:hover { background: var(--green); border-color: var(--green); color: #08150e; }
+  .donate-card.miner .btn-donate:hover { background: var(--cyan); border-color: var(--cyan); color: #08150e; }
+  .donate-card.griefer .btn-donate:hover { background: var(--violet); border-color: var(--violet); color: #14091f; }
 
-  .donate-card.youtuber {
-    margin-top: 4px;
-    border-color: rgba(232,176,75,0.3);
-    background: linear-gradient(135deg, rgba(232,176,75,0.06), transparent);
+  .donate-card.miner {
+    border-color: rgba(53,201,232,0.28);
+    background: linear-gradient(180deg, rgba(53,201,232,0.05), var(--surface) 40%);
   }
-  .youtuber-grid {
+  .donate-card.miner .btn-donate { background: var(--cyan); border-color: var(--cyan); color: #08150e; }
+  .donate-card.miner .btn-donate:hover { background: #63d8f2; }
+
+  .donate-note {
+    margin-top: 20px;
+    font-size: 13px; color: var(--text-faint);
+  }
+  .donate-note a { color: var(--green); text-decoration: underline; }
+
+  .youtuber-row {
+    margin-top: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 26px 28px;
+    background: var(--surface);
     display: grid;
-    grid-template-columns: 1fr 1.4fr;
+    grid-template-columns: 1fr 1.3fr;
     gap: 24px;
   }
-  .youtuber-grid .donate-rank svg { color: var(--amber); }
-  .youtuber-price { font-size: 15px; font-weight: 700; color: var(--amber); margin-bottom: 12px; }
-  .youtuber-copy { font-size: 14px; color: var(--text-dim); margin-bottom: 16px; }
-  .youtuber-copy .highlight { color: var(--amber); font-weight: 600; }
-  .btn-donate-inline {
-    display: inline-block; width: auto;
-    padding: 11px 24px;
-    color: var(--amber); border: 1px solid var(--amber);
-    border-radius: 10px; text-decoration: none;
-    font-size: 14px; font-weight: 700;
+  .youtuber-row .yt-title {
+    font-family: var(--font-display); font-size: 19px; font-weight: 700; color: var(--text);
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .youtuber-row .yt-title::before { content: "$"; color: var(--green); font-family: var(--font-mono); }
+  .youtuber-row .yt-price { font-family: var(--font-mono); font-size: 12.5px; font-weight: 500; color: var(--text-faint); margin-bottom: 10px; }
+  .youtuber-row .yt-desc { font-size: 13px; color: var(--text-dim); margin-bottom: 18px; }
+  .youtuber-row .yt-desc span { color: var(--green); font-weight: 600; }
+  .youtuber-row a.yt-apply {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 13px; font-weight: 700;
+    padding: 12px 22px;
+    background: transparent; color: var(--green);
+    border: 1px solid var(--green-dim);
+    border-radius: var(--radius-sm);
+    text-decoration: none; white-space: nowrap;
     transition: background 0.15s, color 0.15s;
   }
-  .btn-donate-inline:hover { background: var(--amber); color: #241a04; }
+  .youtuber-row a.yt-apply:hover { background: var(--green); color: #08150e; }
+  .youtuber-row .donate-perks li::before { content: "›"; color: var(--text-faint); }
 
-  @media (max-width: 640px) {
-    .youtuber-grid { grid-template-columns: 1fr; }
+  @media (max-width: 600px) {
+    .youtuber-row { grid-template-columns: 1fr; }
   }
 
-  /* ====== RULES ====== */
-  .rules-grid {
+  /* ====== SHORT INFO ====== */
+  .info-columns {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 12px;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
   }
-  .rule-card {
-    background: var(--panel);
-    border: 1px solid var(--line);
+  .info-card {
+    border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 22px;
-    transition: border-color 0.2s;
+    padding: 20px 22px;
+    background: var(--surface);
   }
-  .rule-card.warn:hover { border-color: var(--clay); }
-  .rule-card.ok:hover { border-color: var(--moss); }
-  .rule-card svg { width: 20px; height: 20px; margin-bottom: 12px; }
-  .rule-card.ok svg { color: var(--moss); }
-  .rule-card.warn svg { color: var(--clay); }
-  .rule-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
-  .rule-card p { font-size: 14px; color: var(--text-dim); }
-  .rule-card .danger { color: var(--clay); font-weight: 600; }
-  .rule-card .highlight { color: var(--amber); font-weight: 600; }
+  .info-card h3 {
+    font-family: var(--font-mono);
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 14px;
+  }
+  .info-list { list-style: none; }
+  .info-list li {
+    font-size: 13.5px; color: var(--text-dim);
+    padding: 8px 0; border-top: 1px solid var(--border);
+    display: flex; gap: 9px;
+  }
+  .info-list li:first-child { border-top: none; padding-top: 0; }
+  .info-list.warn li::before { content: "✕"; color: var(--violet); font-family: var(--font-mono); font-size: 11px; }
+  .info-list.ok li::before { content: "✓"; color: var(--green); font-family: var(--font-mono); font-size: 11px; }
+  .info-list li span { color: var(--text); font-weight: 600; }
+
+  @media (max-width: 600px) {
+    .info-columns { grid-template-columns: 1fr; }
+  }
 
   /* ====== CONTACTS ====== */
-  .contact-bar {
-    display: flex; flex-wrap: wrap; gap: 12px;
-    margin-top: 8px;
-  }
+  .contact-bar { display: flex; flex-wrap: wrap; gap: 10px; }
   .contact-btn {
-    display: inline-flex; align-items: center; gap: 8px;
     padding: 13px 20px;
-    border-radius: 10px;
-    font-size: 14px; font-weight: 600;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 13px; font-weight: 500;
     text-decoration: none;
-    border: 1px solid;
-    transition: background 0.15s, color 0.15s;
+    color: var(--text);
+    transition: background 0.15s, border-color 0.15s;
   }
-  .contact-btn svg { width: 16px; height: 16px; }
-  .contact-btn.tg { color: var(--sky); border-color: var(--sky); }
-  .contact-btn.tg:hover { background: var(--sky); color: #06202c; }
-  .contact-btn.support { color: var(--moss); border-color: var(--moss); }
-  .contact-btn.support:hover { background: var(--moss); color: #06231a; }
+  .contact-btn:hover { background: rgba(62,224,140,0.08); border-color: var(--green-dim); color: var(--green); }
 
-  .contact-note {
-    margin-top: 16px;
-    padding: 20px;
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    font-size: 14px;
-    color: var(--text-dim);
-  }
-  .contact-note a { color: var(--sky); text-decoration: none; }
-  .contact-note a:hover { text-decoration: underline; }
-
-  .footer-text {
-    text-align: center;
-    margin-top: 48px;
-    font-size: 12px;
-    color: var(--text-faint);
+  footer {
+    margin-top: 90px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px; color: var(--text-faint);
   }
 
   /* Toast */
   #toast {
-    position: fixed;
-    bottom: 28px; left: 50%;
+    position: fixed; bottom: 26px; left: 50%;
     transform: translateX(-50%) translateY(20px);
-    background: var(--moss);
-    color: #06231a;
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-size: 14px; font-weight: 700;
-    z-index: 999;
-    opacity: 0;
-    transition: opacity 0.3s, transform 0.3s;
+    background: var(--surface); color: var(--green);
+    border: 1px solid var(--green-dim);
+    padding: 11px 20px; border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 13px; font-weight: 600;
+    z-index: 999; opacity: 0;
+    transition: opacity 0.25s, transform 0.25s;
     pointer-events: none;
   }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  @media (max-width: 600px) {
-    .section-header { gap: 10px; }
-  }
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="#about">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
-    О сервере
-  </a>
-  <a href="#donate">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 21 8.5 18 22 6 22 3 8.5"/></svg>
-    Донат
-  </a>
-  <a href="#security">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg>
-    Защита
-  </a>
-  <a href="#contacts">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H8l-4 4V4z"/></svg>
-    Контакты
-  </a>
+  <a href="#donate">Донат</a>
+  <a href="#rules">Правила</a>
+  <a href="#contacts">Контакты</a>
+  <a href="#donate" class="nav-cta">Купить →</a>
 </nav>
 
 <main>
 
   <!-- HERO -->
   <section class="hero">
-    <div class="status-badge">
-      <span class="status-dot"></span>
-      СЕРВЕР ОНЛАЙН
-    </div>
-    <div class="hero-logo">VanillaHouse</div>
-    <div class="hero-sub">Vanilla Survival · Дружелюбное комьюнити · Pure Minecraft</div>
-    <div class="hero-version">версия 1.21.11</div>
+    <div class="status-badge"><span class="status-dot"></span>Сервер онлайн</div>
+    <div class="hero-logo">VanillaHouse<span class="cursor">&nbsp;</span></div>
+    <div class="hero-sub">Ванильное выживание<span class="dot">·</span>1.21.11<span class="dot">·</span>без читов и хаоса</div>
 
-    <div style="margin-top: 24px;">
-      <div class="ip-box" onclick="copyIP()" title="Нажми чтобы скопировать">
-        <span class="label">IP</span>
-        <span id="ip-text">today.vanilla.house</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/></svg>
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span></span><span></span><span></span>
+        <span class="label">connect.sh</span>
       </div>
-      <span class="copy-hint">нажми, чтобы скопировать</span>
+      <div class="ip-row">
+        <div class="ip-box" onclick="copyIP()" title="Нажми чтобы скопировать">
+          <span class="prompt">$</span>
+          <span id="ip-text">today.vanilla.house</span>
+        </div>
+        <div class="ip-copy" onclick="copyIP()">copy</div>
+      </div>
     </div>
+    <span class="copy-hint">// нажми, чтобы скопировать адрес</span>
+
+    <div><a href="https://t.me/VanillaHouseSupport" class="hero-cta" target="_blank">Купить привилегию →</a></div>
   </section>
 
-  <!-- ABOUT -->
-  <section id="about">
-    <div class="section-header">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
-      <div class="section-title">О сервере</div>
-    </div>
-    <div class="features-grid">
-      <div class="feature-card">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v-5a8 8 0 0 1 16 0v5"/><rect x="2" y="15" width="4" height="6" rx="1.5"/><rect x="18" y="15" width="4" height="6" rx="1.5"/></svg>
-        <h3>Отзывчивая поддержка</h3>
-        <p>Быстро отвечаем на вопросы и помогаем с любыми проблемами</p>
-      </div>
-      <div class="feature-card">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
-        <h3>Честная модерация</h3>
-        <p>Справедливые правила, без фаворитизма. Только честная игра</p>
-      </div>
-      <div class="feature-card">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-        <h3>Лёгкое выживание</h3>
-        <p>Удобный старт, дружелюбная среда для новых игроков</p>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- DONATE -->
+  <!-- DONATE — MAIN FOCUS -->
   <section id="donate">
-    <div class="section-header">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 21 8.5 18 22 6 22 3 8.5"/></svg>
-      <div class="section-title">Донат-привилегии</div>
-    </div>
-    <p class="donate-note">Все привилегии выдаются один раз и остаются <span class="highlight">навсегда</span> — без подписок и продлений</p>
+    <div class="eyebrow">Поддержать сервер</div>
+    <div class="section-title">Донат-привилегии</div>
+    <p class="section-lede">Покупаются один раз и остаются <span class="highlight">навсегда</span> — без подписок и продлений.</p>
 
     <div class="donate-grid">
-
-      <!-- HUNTER -->
       <div class="donate-card hunter">
-        <div class="donate-rank">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
-          Hunter
+        <div class="card-top">
+          <div class="rank-icon">H</div>
         </div>
+        <div class="donate-rank">Hunter</div>
         <div class="donate-price">39 ₽</div>
         <ul class="donate-perks">
           <li><span class="cmd">/kit hunter</span></li>
           <li><span class="cmd">/feed</span> — восстановить голод</li>
-          <li><span class="cmd">/wb</span> — открытие верстака</li>
-          <li>Префикс <span class="prefix-hunter">[Hunter]</span></li>
+          <li><span class="cmd">/wb</span> — верстак</li>
+          <li>Префикс [Hunter]</li>
           <li>2 точки дома</li>
-          <li>3 слота на аукционе</li>
         </ul>
         <a href="https://t.me/VanillaHouseSupport" class="btn-donate" target="_blank">Купить →</a>
       </div>
 
-      <!-- MINER -->
       <div class="donate-card miner">
-        <div class="best-value">POPULAR</div>
-        <div class="donate-rank">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 6.5a4 4 0 0 0-5.6 4.6L3 18l3 3 6.9-6.9a4 4 0 0 0 4.6-5.6l-2.4 2.4-2-2 2.4-2.4z"/></svg>
-          Miner
+        <div class="card-top">
+          <div class="rank-icon">M</div>
+          <div class="best-value">ПОПУЛЯРНЫЙ</div>
         </div>
+        <div class="donate-rank">Miner</div>
         <div class="donate-price">89 ₽</div>
-        <div class="inherited-note">+ все привилегии Hunter</div>
+        <div class="inherited-note">+ всё из Hunter</div>
         <ul class="donate-perks">
           <li><span class="cmd">/kit miner</span></li>
           <li><span class="cmd">/heal</span> — восстановить здоровье</li>
-          <li><span class="cmd">/ec</span> — открытие эндер-сундука</li>
-          <li>Префикс <span class="prefix-miner">[Miner]</span></li>
+          <li><span class="cmd">/ec</span> — эндер-сундук</li>
+          <li>Префикс [Miner]</li>
           <li>3 точки дома</li>
-          <li>5 слотов на аукционе</li>
         </ul>
         <a href="https://t.me/VanillaHouseSupport" class="btn-donate" target="_blank">Купить →</a>
       </div>
 
-      <!-- GRIEFER -->
       <div class="donate-card griefer">
-        <div class="donate-rank">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 4 14 11 14 10 22 20 10 13 10 13 2"/></svg>
-          Griefer
+        <div class="card-top">
+          <div class="rank-icon">G</div>
         </div>
+        <div class="donate-rank">Griefer</div>
         <div class="donate-price">149 ₽</div>
-        <div class="inherited-note">+ все привилегии Miner</div>
+        <div class="inherited-note">+ всё из Miner</div>
         <ul class="donate-perks">
           <li><span class="cmd">/kit griefer</span></li>
-          <li><span class="cmd">/gift</span> — подарок игрокам</li>
-          <li>Префикс <span class="prefix-griefer">[Griefer]</span></li>
+          <li><span class="cmd">/gift</span> — подарок игроку</li>
+          <li>Префикс [Griefer]</li>
           <li>4 точки дома</li>
-          <li>7 слотов на аукционе</li>
         </ul>
         <a href="https://t.me/VanillaHouseSupport" class="btn-donate" target="_blank">Купить →</a>
       </div>
     </div>
 
-    <!-- YOUTUBER -->
-    <div class="donate-card youtuber">
-      <div class="youtuber-grid">
-        <div>
-          <div class="donate-rank">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="10 8 16.5 12 10 16 10 8"/></svg>
-            YouTuber
-          </div>
-          <div class="youtuber-price">БЕСПЛАТНО · по заявке</div>
-          <ul class="donate-perks">
-            <li><span class="cmd">/wb</span> <span class="cmd">/ec</span> — верстак и эндер-сундук</li>
-            <li><span class="cmd">/kit youtuber</span></li>
-            <li>Уникальный префикс <span class="highlight">[YouTube]</span></li>
-          </ul>
-        </div>
-        <div>
-          <p class="youtuber-copy">
-            Требования: <span class="highlight">5 видео</span> о сервере (без негатива),
-            <span class="highlight">от 100 подписчиков</span>, стабильная активность на канале.
-          </p>
-          <a href="https://t.me/VanillaHouseSupport" class="btn-donate-inline" target="_blank">Подать заявку в TG →</a>
-        </div>
+    <div class="youtuber-row">
+      <div>
+        <div class="yt-title">YouTuber</div>
+        <div class="yt-price">Бесплатно · по заявке</div>
+        <div class="yt-desc"><span>5 видео</span> о сервере без негатива, <span>от 100 подписчиков</span>, стабильная активность на канале.</div>
+        <a href="https://t.me/VanillaHouseSupport" class="yt-apply" target="_blank">Подать заявку →</a>
+      </div>
+      <ul class="donate-perks" style="margin-bottom:0;">
+        <li><span class="cmd">/kit youtuber</span></li>
+        <li><span class="cmd">/wb</span> — верстак</li>
+        <li><span class="cmd">/ec</span> — эндер-сундук</li>
+        <li>Уникальный префикс [YouTube]</li>
+        <li>Все привилегии ранга Griefer</li>
+        <li>Упоминание канала в TG-канале сервера</li>
+      </ul>
+    </div>
+
+    <p class="donate-note">Все вопросы по оплате — в поддержку <a href="https://t.me/VanillaHouseSupport">@VanillaHouseSupport</a>.</p>
+  </section>
+
+  <!-- SHORT RULES -->
+  <section id="rules">
+    <div class="eyebrow">Коротко</div>
+    <div class="section-title">Правила и защита</div>
+    <div class="info-columns">
+      <div class="info-card">
+        <h3>Что есть</h3>
+        <ul class="info-list ok">
+          <li>Регулярные <span>бэкапы</span> сервера</li>
+          <li>Защита от лаг-машин и эксплойтов</li>
+          <li>Отзывчивая поддержка</li>
+          <li>Честная модерация без фаворитизма</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>Что нельзя</h3>
+        <ul class="info-list warn">
+          <li>Читы — <span>бан навсегда</span></li>
+          <li>Взлом / краш сервера — <span>бан навсегда</span></li>
+          <li>Багоюз без репорта — <span>бан навсегда</span></li>
+          <li>Гриф и оскорбления — <span>бан 7 дней</span></li>
+        </ul>
       </div>
     </div>
   </section>
-
-  <div class="divider"></div>
-
-  <!-- SECURITY -->
-  <section id="security">
-    <div class="section-header">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg>
-      <div class="section-title">Защита и правила</div>
-    </div>
-    <div class="rules-grid">
-
-      <div class="rule-card ok">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="8" ry="2.8"/><path d="M4 5.5V12c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8V5.5"/><path d="M4 12v6.5c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8V12"/></svg>
-        <h3>Резервные копии</h3>
-        <p>Регулярные бэкапы сервера. Даже если произойдёт краш или попытка взлома — данные восстановятся</p>
-      </div>
-
-      <div class="rule-card ok">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 13 6.5 13 9 6 14 20 16.5 13 22 13"/></svg>
-        <h3>Защита от лагов</h3>
-        <p>Жёсткие ограничения на лаг-машины и эксплойты. Стабильная работа для всех игроков</p>
-      </div>
-
-      <div class="rule-card warn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3z"/><line x1="12" y1="10" x2="12" y2="14.5"/><line x1="12" y1="17.2" x2="12" y2="17.3"/></svg>
-        <h3>Взлом / краш</h3>
-        <p>Попытка сломать сервер = <span class="danger">бан аккаунта + бан по IP</span>. Без предупреждений</p>
-      </div>
-
-      <div class="rule-card warn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>
-        <h3>Читы / чит-клиенты</h3>
-        <p>Использование читов = <span class="danger">бан по IP + блокировка аккаунта навсегда</span>. Никаких предупреждений и апелляций</p>
-      </div>
-
-      <div class="rule-card warn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 21 12 15 18"/><polyline points="9 6 3 12 9 18"/></svg>
-        <h3>Багоюз / эксплойты</h3>
-        <p>Использование багов и недочётов сервера в своих целях = <span class="danger">блокировка навсегда</span>. Если нашёл баг — <span class="highlight">сообщи в поддержку</span>, иначе бан. Распространение эксплойтов также карается перманентным баном</p>
-      </div>
-
-      <div class="rule-card ok">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4c0-.6 4-1.5 8-1.5s4 1.5 8 1.5v11c0 .6-4 1.5-8 1.5s-8-1.5-8-1.5"/></svg>
-        <h3>Гриф и оскорбления</h3>
-        <p>За гриф и оскорбления — <span class="danger">бан 7 дней</span>. Уважайте друг друга и чужие постройки</p>
-      </div>
-
-    </div>
-  </section>
-
-  <div class="divider"></div>
 
   <!-- CONTACTS -->
   <section id="contacts">
-    <div class="section-header">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H8l-4 4V4z"/></svg>
-      <div class="section-title">Контакты и поддержка</div>
-    </div>
-
+    <div class="eyebrow">Связь</div>
+    <div class="section-title">Контакты</div>
     <div class="contact-bar">
-      <a href="https://t.me/VHminecraft" class="contact-btn tg" target="_blank">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="3" x2="10.5" y2="13.5"/><polygon points="21 3 14.5 21 10.5 13.5 3 9.5 21 3"/></svg>
-        TG-канал @VHminecraft
-      </a>
-      <a href="https://t.me/VanillaHouseSupport" class="contact-btn support" target="_blank">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v-5a8 8 0 0 1 16 0v5"/><rect x="2" y="15" width="4" height="6" rx="1.5"/><rect x="18" y="15" width="4" height="6" rx="1.5"/></svg>
-        Поддержка @VanillaHouseSupport
-      </a>
-    </div>
-
-    <div class="contact-note">
-      По вопросам доната, жалобам и предложениям — пишите в личные сообщения
-      <a href="https://t.me/VanillaHouseSupport">@VanillaHouseSupport</a>.
-      Новости и обновления сервера в канале
-      <a href="https://t.me/VHminecraft">@VHminecraft</a>.
+      <a href="https://t.me/VHminecraft" class="contact-btn" target="_blank">Новости @VHminecraft</a>
+      <a href="https://t.me/VanillaHouseSupport" class="contact-btn" target="_blank">Поддержка @VanillaHouseSupport</a>
     </div>
   </section>
 
-  <p class="footer-text">© VanillaHouse · Vanilla Survival Server</p>
+  <footer>
+    <span>© VanillaHouse</span>
+    <span>Vanilla Survival Server</span>
+  </footer>
 
 </main>
 
