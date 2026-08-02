@@ -1,589 +1,797 @@
 <!DOCTYPE html>
-<!-- saved from url=(0033)https://vanilla-house.vercel.app/ -->
-<html lang="ru"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vanilla House — Minecraft сервер</title>
-<link rel="preconnect" href="https://fonts.googleapis.com/">
-<link href="./Vanilla House — Minecraft сервер_files/css2" rel="stylesheet">
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Vanilla House — ванильный Minecraft-сервер</title>
+<meta name="description" content="Vanilla House — честное ванильное выживание без лишнего доната. IP: today.vanilla.house">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #07070a;
-    --bg-panel: #121014;
-    --bg-panel-2: #17141a;
-    --blood: #8f1a26;
-    --blood-bright: #e0293f;
-    --bone: #e7ded0;
-    --ash: #8f887b;
-    --line: #2b2620;
-    --ok: #6fae55;
+    --bg:#F3FBF9;
+    --bg-alt:#E7F7F2;
+    --surface:#FFFFFF;
+    --ink:#0B2523;
+    --ink-soft:#4C6B67;
+    --brand-900:#052F2B;
+    --brand-800:#0A4B44;
+    --brand-700:#0E5C54;
+    --brand-500:#14B8A6;
+    --mint-400:#5EEAD4;
+    --mint-300:#9BF3E1;
+    --line:#D7EEE9;
+    --shadow:0 10px 30px -12px rgba(6,60,55,0.18);
+    --radius-lg:22px;
+    --radius-md:16px;
+    --radius-sm:10px;
   }
 
-  *{ box-sizing:border-box; }
-  html{ scroll-behavior:smooth; }
-
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
   body{
     margin:0;
-    background: var(--bg);
-    color: var(--bone);
-    font-family:'EB Garamond', serif;
-    font-size:18px;
-    line-height:1.5;
-    position:relative;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
   }
-
-  /* ambient fog / scratch texture */
-  body::before{
-    content:"";
-    position:fixed; inset:0;
-    background:
-      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(143,26,38,0.16), transparent 60%),
-      radial-gradient(ellipse 60% 40% at 90% 100%, rgba(143,26,38,0.08), transparent 60%);
-    pointer-events:none;
-    z-index:0;
-  }
-  body::after{
-    content:"";
-    position:fixed; inset:0;
-    background-image:
-      repeating-linear-gradient(115deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 2px, transparent 90px),
-      repeating-linear-gradient(25deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 1px, transparent 2px, transparent 130px);
-    pointer-events:none;
-    z-index:0;
-    opacity:0.6;
-  }
-
-  .wrap{ max-width:1180px; margin:0 auto; padding:0 28px; position:relative; z-index:1; }
-
-  .display{ font-family:'Cinzel Decorative', serif; letter-spacing:0.02em; }
-  .mono{ font-family:'JetBrains Mono', monospace; }
-
-  /* ---------- HERO ---------- */
-  .hero{
-    padding: 90px 0 60px;
-    text-align:center;
-    position:relative;
-    border-bottom:1px solid var(--line);
-  }
-  .hero .eyebrow{
-    font-family:'JetBrains Mono', monospace;
-    font-size:12px;
-    letter-spacing:0.35em;
-    text-transform:uppercase;
-    color: var(--ash);
-    margin-bottom:22px;
-  }
-  .hero h1{
-    font-size: clamp(48px, 9vw, 96px);
+  h1,h2,h3,.font-display{
+    font-family:'Poppins',sans-serif;
     margin:0;
-    color: var(--bone);
-    text-shadow: 0 0 40px rgba(224,41,63,0.35), 0 2px 0 #000;
-    font-weight:900;
-    line-height:1;
+    letter-spacing:-0.01em;
   }
-  .hero .sub{
-    margin-top:18px;
-    display:flex; align-items:center; justify-content:center; gap:14px;
-    font-family:'JetBrains Mono', monospace; font-size:14px; color:var(--ash); letter-spacing:0.08em;
+  code, .mono{
+    font-family:'JetBrains Mono',monospace;
   }
-  .sub .divider{ color:var(--line); }
-  .status{ display:inline-flex; align-items:center; gap:8px; color:var(--ok); }
-  .status .dot{
-    width:8px; height:8px; border-radius:50%; background:var(--ok);
-    box-shadow:0 0 8px var(--ok);
-    animation: pulse 1.8s ease-in-out infinite;
-  }
-  @keyframes pulse{
-    0%,100%{ opacity:1; transform:scale(1); }
-    50%{ opacity:0.45; transform:scale(0.78); }
-  }
-
-  .ip-field{
-    margin: 38px auto 0;
-    max-width: 460px;
-    display:flex;
-    align-items:center;
-    border:1px solid var(--line);
-    background: linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
-    border-radius:4px;
-    overflow:hidden;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02), 0 20px 40px -20px rgba(0,0,0,0.7);
-  }
-  .ip-field .label{
-    font-family:'JetBrains Mono', monospace;
-    font-size:11px; letter-spacing:0.2em; text-transform:uppercase;
-    color:var(--ash);
-    padding: 0 16px;
-    border-right:1px solid var(--line);
-    white-space:nowrap;
-  }
-  .ip-field input{
-    flex:1;
-    background:transparent;
-    border:none;
-    outline:none;
-    color:var(--bone);
-    font-family:'JetBrains Mono', monospace;
-    font-size:16px;
-    padding: 16px 14px;
-    letter-spacing:0.02em;
-  }
-  .ip-field button{
-    border:none;
-    background: var(--blood);
-    color:#f4ece4;
-    font-family:'JetBrains Mono', monospace;
-    font-size:13px;
-    letter-spacing:0.08em;
-    text-transform:uppercase;
-    padding: 16px 20px;
-    cursor:pointer;
-    transition: background .18s ease;
-    white-space:nowrap;
-  }
-  .ip-field button:hover{ background: var(--blood-bright); }
-  .ip-field button.copied{ background: var(--ok); color:#0a0a0a; }
-
-  /* ---------- SECTION HEADERS ---------- */
-  .section{ padding: 70px 0; }
-  .section-head{ text-align:center; margin-bottom:46px; }
-  .section-head .kicker{
-    font-family:'JetBrains Mono', monospace;
-    font-size:12px; letter-spacing:0.3em; text-transform:uppercase; color:var(--blood-bright);
-    margin-bottom:10px;
-  }
-  .section-head h2{
-    font-family:'Cinzel Decorative', serif;
-    font-size: clamp(30px, 4vw, 42px);
-    margin:0;
-    color:var(--bone);
-  }
-  .section-head p{ color:var(--ash); max-width:560px; margin:14px auto 0; font-style:italic; }
-
-  /* ---------- TIER CARDS ---------- */
-  .tiers{
-    display:grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap:22px;
-  }
-  @media (max-width: 1000px){ .tiers{ grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 560px){ .tiers{ grid-template-columns: 1fr; } }
-
-  .tier{
-    position:relative;
-    background: linear-gradient(180deg, var(--bg-panel) 0%, #0d0b0e 100%);
-    border:1px solid var(--line);
-    border-radius:6px;
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
-    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
-  }
-  .tier:hover{
-    transform: translateY(-6px);
-    border-color: rgba(224,41,63,0.5);
-    box-shadow: 0 20px 50px -20px rgba(224,41,63,0.35);
-  }
-  .tier-art{
-    position:relative;
-    height:230px;
-    background: radial-gradient(ellipse at 50% 20%, rgba(224,41,63,0.10), transparent 60%), #050506;
-    display:flex; align-items:center; justify-content:center;
-    border-bottom:1px solid var(--line);
-    overflow:hidden;
-  }
-  .tier-art img{
-    width:100%; height:100%; object-fit:cover;
-    object-position: center 20%;
-    filter: grayscale(15%) contrast(1.05);
-    transition: transform .4s ease;
-  }
-  .tier:hover .tier-art img{ transform: scale(1.06); }
-  .tier-art::after{
-    content:"";
-    position:absolute; inset:0;
-    background: linear-gradient(180deg, transparent 55%, rgba(7,7,10,0.95) 100%);
-  }
-  .tier-art .price-tag{
-    position:absolute; top:14px; right:14px; z-index:2;
-    background: rgba(7,7,10,0.75);
-    border:1px solid var(--blood);
-    color:var(--bone);
-    font-family:'JetBrains Mono', monospace;
-    font-size:13px;
-    padding:6px 10px;
-    border-radius:3px;
-    letter-spacing:0.03em;
-  }
-  .tier-art .free-tag{
-    border-color: var(--ok); color:#c9e8bb;
-  }
-  .tier-body{
-    padding: 20px 22px 24px;
-    display:flex; flex-direction:column; flex:1;
-  }
-  .tier-name{
-    font-family:'Cinzel Decorative', serif;
-    font-size:24px;
-    color:var(--bone);
-    margin:0 0 4px;
-  }
-  .tier-duration{
-    font-family:'JetBrains Mono', monospace;
-    font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ash);
-    margin-bottom:16px;
-  }
-  .perk-list{ list-style:none; margin:0 0 16px; padding:0; flex:1; }
-  .perk-list li{
-    display:flex; gap:10px; align-items:flex-start;
-    padding:7px 0;
-    border-bottom:1px dashed var(--line);
-    font-size:16px;
-    color: #d8d0c2;
-  }
-  .perk-list li:last-child{ border-bottom:none; }
-  .perk-list .cmd{
-    font-family:'JetBrains Mono', monospace;
-    color: var(--blood-bright);
-    font-size:14px;
-    white-space:nowrap;
-  }
-  .prefix{
-    font-family:'JetBrains Mono', monospace;
-    font-size:13px;
-    color: var(--ash);
-    margin-bottom:18px;
-  }
-  .prefix span{
-    color: var(--bone);
-    border:1px solid var(--line);
-    padding:3px 8px;
-    border-radius:3px;
-    background: rgba(255,255,255,0.02);
-  }
-  .buy-btn{
-    display:block;
-    text-align:center;
-    text-decoration:none;
-    background: var(--blood);
-    color:#f5ece4;
-    font-family:'JetBrains Mono', monospace;
-    letter-spacing:0.12em;
-    text-transform:uppercase;
-    font-size:13px;
-    padding:13px 16px;
-    border-radius:4px;
-    transition: background .18s ease, transform .18s ease;
-  }
-  .buy-btn:hover{ background:var(--blood-bright); transform: translateY(-2px); }
-  .buy-btn.free{ background: transparent; border:1px solid var(--ok); color:#c9e8bb; }
-  .buy-btn.free:hover{ background: rgba(111,174,85,0.12); }
-
-  .yt-reqs{
-    font-size:14px; color:var(--ash); margin: 0 0 14px;
-    padding-left:18px;
-  }
-  .yt-reqs li{ margin-bottom:4px; }
-
-  /* ---------- RULES ---------- */
-  .rules{
-    display:grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap:18px;
-  }
-  @media (max-width: 900px){ .rules{ grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 560px){ .rules{ grid-template-columns: 1fr; } }
-
-  .rule-card{
-    background: var(--bg-panel);
-    border:1px solid var(--line);
-    border-radius:6px;
-    padding:22px;
-    position:relative;
-  }
-  .rule-card .icon{
-    width:34px; height:34px;
-    border:1px solid var(--blood);
-    border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    margin-bottom:14px;
-    color:var(--blood-bright);
-    font-size:16px;
-  }
-  .rule-card h3{
-    font-family:'Cinzel Decorative', serif;
-    font-size:19px;
-    margin:0 0 8px;
-    color:var(--bone);
-  }
-  .rule-card p{
-    margin:0;
-    font-size:15.5px;
-    color:#c9c2b6;
-  }
-  .rule-card b{ color: var(--blood-bright); font-weight:600; }
-  .rule-card .warn{ color:#e8a13b; font-weight:600; }
-
-  /* ---------- FOOTER ---------- */
-  footer{
-    border-top:1px solid var(--line);
-    padding: 40px 0 60px;
-    text-align:center;
-    color:var(--ash);
-    font-size:14px;
-  }
-
-  /* Floating Action Buttons */
-  .fab-container{
-    position:fixed;
-    right:26px; bottom:26px;
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-    z-index:20;
-  }
-  .fab{
-    width:56px; height:56px;
-    border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    transition: transform .2s ease, box-shadow .2s ease;
-    text-decoration:none;
-  }
-  .fab:hover{ transform: scale(1.08) translateY(-2px); }
-  
-  .fab-tg{
-    background: linear-gradient(180deg, #2aa9dc, #1c8ecf);
-    box-shadow: 0 10px 25px -5px rgba(42,169,220,0.5), 0 0 0 1px rgba(255,255,255,0.08);
-  }
-  .fab-tg svg{ width:26px; height:26px; }
-
-  .fab-support{
-    background: linear-gradient(180deg, #8f1a26, #6b101a);
-    box-shadow: 0 10px 25px -5px rgba(143,26,38,0.6), 0 0 0 1px rgba(255,255,255,0.08);
-  }
-  .fab-support svg{ width:24px; height:24px; fill:#fff; }
-
-  .footer-links{
-    display:flex; gap:22px; justify-content:center; margin-top:14px;
-    font-family:'JetBrains Mono', monospace; font-size:12.5px;
-  }
-  .footer-links a{ color:var(--ash); text-decoration:none; border-bottom:1px solid transparent; }
-  .footer-links a:hover{ color:var(--bone); border-color:var(--blood-bright); }
+  a{color:inherit; text-decoration:none;}
+  ul{margin:0; padding:0; list-style:none;}
+  button{font-family:inherit; cursor:pointer;}
+  img,svg{display:block;}
+  .icon{width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0;}
 
   @media (prefers-reduced-motion: reduce){
-    .status .dot{ animation:none; }
-    *{ transition:none !important; }
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
   }
 
-  :focus-visible{
-    outline: 2px solid var(--blood-bright);
-    outline-offset: 2px;
+  /* ---------- layout helpers ---------- */
+  .wrap{max-width:1120px; margin:0 auto; padding:0 24px;}
+  section{padding:96px 0;}
+  @media (max-width:720px){ section{padding:64px 0;} }
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:13px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--brand-700);
+    margin-bottom:14px;
+  }
+  .eyebrow::before{
+    content:""; width:18px; height:2px; background:var(--brand-500); border-radius:2px;
+  }
+  .section-head{max-width:640px; margin-bottom:48px;}
+  .section-head h2{font-size:clamp(28px,4vw,40px); font-weight:700; color:var(--brand-900);}
+  .section-head p{margin-top:12px; font-size:16px; color:var(--ink-soft); line-height:1.6;}
+
+  /* reveal on scroll */
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.visible{opacity:1; transform:translateY(0);}
+
+  header.site{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    backdrop-filter:blur(10px);
+    background:rgba(6,47,43,0.55);
+    transition:background .3s ease, box-shadow .3s ease;
+  }
+  header.site.scrolled{
+    background:rgba(5,40,37,0.86);
+    box-shadow:0 8px 24px -12px rgba(0,0,0,0.35);
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    height:72px;
+  }
+  .brand{display:flex; align-items:center; gap:10px; color:#fff; font-family:'Poppins',sans-serif; font-weight:700; font-size:18px;}
+  .brand .icon{color:var(--mint-400);}
+  .nav-links{display:flex; align-items:center; gap:8px;}
+  .nav-links a{
+    color:rgba(255,255,255,0.85); font-weight:500; font-size:15px;
+    padding:10px 16px; border-radius:100px; transition:background .25s ease, color .25s ease;
+  }
+  .nav-links a:hover{background:rgba(255,255,255,0.1); color:#fff;}
+  .nav-cta{
+    display:flex; align-items:center; gap:6px;
+    background:var(--mint-400); color:var(--brand-900);
+    padding:10px 18px; border-radius:100px; font-weight:600; font-size:14px;
+    border:none; transition:background .25s ease;
+  }
+  .nav-cta.copied{background:#fff;}
+  .burger{
+    display:none; background:none; border:none; color:#fff; padding:8px;
+  }
+  .mobile-menu{
+    position:fixed; inset:0; z-index:99; background:var(--brand-900);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:28px;
+    transform:translateY(-100%); transition:transform .4s cubic-bezier(.65,0,.35,1);
+  }
+  .mobile-menu.open{transform:translateY(0);}
+  .mobile-menu a{color:#fff; font-size:24px; font-weight:600; font-family:'Poppins',sans-serif;}
+  .mobile-menu .nav-cta{font-size:16px; padding:14px 28px;}
+
+  @media (max-width:860px){
+    .nav-links{display:none;}
+    .burger{display:block;}
+  }
+
+  .hero{
+    position:relative;
+    padding-top:200px; padding-bottom:180px;
+    background:linear-gradient(180deg, var(--brand-900) 0%, var(--brand-800) 55%, var(--brand-700) 100%);
+    overflow:hidden;
+  }
+  .hero .wrap{position:relative; z-index:3;}
+  .hero-status{
+    display:inline-flex; align-items:center; gap:10px;
+    background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.14);
+    padding:8px 16px; border-radius:100px; margin-bottom:28px;
+  }
+  .status-dot{
+    width:9px; height:9px; border-radius:50%; background:#5EEAD4; position:relative;
+  }
+  .status-dot::after{
+    content:""; position:absolute; inset:-6px; border-radius:50%; background:#5EEAD4;
+    animation:pulse-ring 2s ease-out infinite;
+  }
+  @keyframes pulse-ring{
+    0%{opacity:0.6; transform:scale(0.6);}
+    100%{opacity:0; transform:scale(2.4);}
+  }
+  .hero-status span{color:var(--mint-300); font-size:13px; font-weight:600; letter-spacing:0.02em;}
+  .hero-status .mono{color:rgba(255,255,255,0.55); font-size:12px;}
+
+  .hero h1{
+    font-size:clamp(34px,6vw,64px); font-weight:800; color:#fff; line-height:1.08; max-width:820px;
+  }
+  .hero h1 span{color:var(--mint-400);}
+  .hero p.lead{
+    margin-top:22px; font-size:clamp(16px,2vw,19px); color:rgba(255,255,255,0.72);
+    max-width:560px; line-height:1.65;
+  }
+
+  .ip-box{
+    margin-top:40px; display:flex; flex-wrap:wrap; gap:14px; align-items:stretch;
+  }
+  .ip-pill{
+    display:flex; align-items:center; gap:14px;
+    background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.16);
+    border-radius:var(--radius-md); padding:14px 20px;
+  }
+  .ip-pill .ip-label{font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.5); font-weight:600;}
+  .ip-pill .ip-value{font-size:18px; color:#fff; font-weight:600;}
+  .copy-btn{
+    display:flex; align-items:center; gap:9px;
+    background:var(--mint-400); color:var(--brand-900); border:none;
+    border-radius:var(--radius-md); padding:0 22px; font-weight:700; font-size:15px;
+    transition:transform .2s ease, background .2s ease, box-shadow .2s ease;
+    box-shadow:0 8px 20px -8px rgba(94,234,212,0.6);
+  }
+  .copy-btn:hover{transform:translateY(-2px); box-shadow:0 12px 26px -8px rgba(94,234,212,0.75);}
+  .copy-btn:active{transform:translateY(0);}
+  .copy-btn.copied{background:#fff;}
+
+  /* blocky mountain scenery */
+  .scenery{
+    position:absolute; left:0; right:0; bottom:0; height:280px; z-index:1; pointer-events:none;
+  }
+  .scenery svg{width:200%; height:100%;}
+  .layer-back{animation:drift 46s linear infinite; opacity:0.35;}
+  .layer-mid{animation:drift 32s linear infinite reverse; opacity:0.55;}
+  .layer-front{animation:drift 24s linear infinite; opacity:0.9;}
+  @keyframes drift{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  .stars{position:absolute; inset:0; z-index:0;}
+  .star{position:absolute; width:3px; height:3px; background:#fff; border-radius:1px; opacity:0.5; animation:twinkle 3.4s ease-in-out infinite;}
+  @keyframes twinkle{0%,100%{opacity:0.15;} 50%{opacity:0.7;}}
+
+  .hero-fade{
+    position:absolute; left:0; right:0; bottom:0; height:260px; z-index:4; pointer-events:none;
+    background:linear-gradient(to bottom, rgba(20,184,166,0) 0%, rgba(20,184,166,0.25) 45%, var(--bg) 92%);
+  }
+  .hero-divider{
+    position:absolute; left:0; right:0; bottom:0; z-index:5; line-height:0; pointer-events:none;
+  }
+  .hero-divider svg{width:100%; height:80px; display:block;}
+  .hero-divider path{fill:var(--bg);}
+  @media (max-width:720px){
+    .hero-fade{height:160px;}
+    .hero-divider svg{height:44px;}
+  }
+
+  .priv-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:22px;
+  }
+  .priv-card{
+    position:relative;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-lg);
+    padding:28px 26px;
+    box-shadow:var(--shadow);
+    transition:transform .35s cubic-bezier(.2,.7,.3,1), box-shadow .35s ease, border-color .35s ease;
+    display:flex; flex-direction:column; gap:18px;
+  }
+  .priv-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 22px 44px -18px rgba(6,60,55,0.32);
+    border-color:var(--mint-400);
+  }
+  .priv-card .top-row{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
+  .priv-icon{
+    width:52px; height:52px; border-radius:14px;
+    display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(circle at 30% 20%, var(--mint-300), var(--brand-500));
+    color:#fff;
+    filter:drop-shadow(0 0 10px rgba(20,184,166,0.55));
+    animation:glow-pulse 3.2s ease-in-out infinite;
+  }
+  @keyframes glow-pulse{
+    0%,100%{filter:drop-shadow(0 0 8px rgba(20,184,166,0.4));}
+    50%{filter:drop-shadow(0 0 16px rgba(94,234,212,0.75));}
+  }
+  .priv-icon .icon{width:26px; height:26px;}
+  .price{
+    font-family:'Poppins',sans-serif; font-weight:700; font-size:20px; color:var(--brand-800);
+    background:var(--bg-alt); padding:6px 14px; border-radius:100px; white-space:nowrap;
+  }
+  .price.free{color:var(--brand-500);}
+  .price.locked{color:var(--ink-soft); background:var(--bg-alt);}
+  .priv-card h3{font-size:20px; font-weight:700; color:var(--ink);}
+  .priv-card .desc{font-size:13.5px; color:var(--ink-soft); line-height:1.5; margin-top:-10px;}
+  .cmd-list{display:flex; flex-wrap:wrap; gap:8px;}
+  .cmd{
+    font-size:12.5px; background:var(--brand-900); color:var(--mint-300);
+    padding:5px 10px; border-radius:7px; font-weight:500;
+  }
+  .meta-row{
+    display:flex; flex-direction:column; gap:9px; margin-top:auto; padding-top:14px; border-top:1px dashed var(--line);
+  }
+  .meta-item{display:flex; align-items:center; gap:9px; font-size:13.5px; color:var(--ink-soft);}
+  .meta-item .icon{width:17px; height:17px; color:var(--brand-500);}
+  .meta-item b{color:var(--ink); font-weight:600;}
+  .prefix-tag{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600;
+    color:var(--brand-700); background:var(--mint-300); padding:4px 10px; border-radius:7px; width:fit-content;
+  }
+  .req-box{
+    background:var(--bg-alt); border-radius:var(--radius-sm); padding:12px 14px; font-size:12.5px; color:var(--ink-soft); line-height:1.55;
+  }
+  .req-box b{color:var(--ink);}
+
+  .buy-btn{
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    width:100%; border:none; border-radius:100px; padding:13px 18px;
+    font-weight:700; font-size:14.5px; font-family:'Inter',sans-serif;
+    background:var(--brand-900); color:#fff;
+    transition:transform .25s ease, box-shadow .25s ease, background .25s ease;
+  }
+  .buy-btn .icon{width:17px; height:17px; color:var(--mint-400);}
+  .buy-btn:hover{transform:translateY(-2px); box-shadow:0 12px 24px -10px rgba(6,47,43,0.5); background:var(--brand-700);}
+  .buy-btn:active{transform:translateY(0);}
+  .buy-btn.primary{
+    background:linear-gradient(135deg, var(--brand-500), var(--brand-700));
+    box-shadow:0 10px 22px -10px rgba(20,184,166,0.6);
+  }
+  .buy-btn.primary .icon{color:#fff;}
+  .buy-btn.ghost{
+    background:var(--bg-alt); color:var(--brand-800);
+  }
+  .buy-btn.ghost .icon{color:var(--brand-700);}
+
+  .rules-wrap{background:var(--bg-alt);}
+  .rules-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px;
+  }
+  .rule-card{
+    background:var(--surface); border-radius:var(--radius-md); padding:24px;
+    display:flex; gap:16px; align-items:flex-start;
+    border:1px solid var(--line);
+    transition:transform .3s ease, box-shadow .3s ease;
+  }
+  .rule-card:hover{transform:translateY(-4px); box-shadow:var(--shadow);}
+  .rule-icon{
+    width:44px; height:44px; border-radius:12px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--bg-alt); color:var(--brand-700);
+  }
+  .rule-icon.warn{background:#FDEDEC; color:#C0392B;}
+  .rule-card h3{font-size:16px; font-weight:600; margin-bottom:6px; color:var(--ink);}
+  .rule-card p{font-size:13.5px; color:var(--ink-soft); line-height:1.55; margin:0;}
+
+  footer{
+    background:var(--brand-900); color:rgba(255,255,255,0.7); padding:56px 0 32px;
+  }
+  .footer-top{
+    display:flex; flex-wrap:wrap; justify-content:space-between; gap:32px; padding-bottom:32px; border-bottom:1px solid rgba(255,255,255,0.1);
+  }
+  .footer-brand{display:flex; align-items:center; gap:10px; color:#fff; font-family:'Poppins',sans-serif; font-weight:700; font-size:17px;}
+  .footer-brand .icon{color:var(--mint-400);}
+  .footer-links{display:flex; gap:14px; flex-wrap:wrap;}
+  .footer-link{
+    display:flex; align-items:center; gap:9px;
+    background:rgba(255,255,255,0.06); padding:10px 16px; border-radius:100px; font-size:14px; color:#fff;
+    transition:background .25s ease, transform .25s ease;
+  }
+  .footer-link:hover{background:rgba(255,255,255,0.14); transform:translateY(-2px);}
+  .footer-bottom{padding-top:24px; font-size:13px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; color:rgba(255,255,255,0.45);}
+  .legal-note{
+    margin:24px 0 0; padding:18px 20px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+    border-radius:var(--radius-sm); max-width:860px;
+  }
+  .legal-note p{
+    font-size:12px; line-height:1.6; color:rgba(255,255,255,0.5); margin:8px 0 0;
+  }
+  .legal-note p:first-of-type{margin-top:0;}
+  .legal-title{
+    font-family:'Poppins',sans-serif; font-size:12.5px !important; font-weight:600 !important;
+    text-transform:uppercase; letter-spacing:0.06em; color:rgba(255,255,255,0.7) !important;
+    margin-bottom:4px !important;
+  }
+
+  .floaters{
+    position:fixed; right:20px; bottom:22px; z-index:80;
+    display:flex; flex-direction:column; gap:12px; align-items:flex-end;
+  }
+  .fab{
+    display:flex; align-items:center; gap:10px;
+    background:var(--brand-900); color:#fff; border:none;
+    border-radius:100px; padding:13px 16px; box-shadow:0 10px 24px -8px rgba(6,47,43,0.5);
+    font-size:14px; font-weight:600;
+    transition:transform .25s ease, box-shadow .25s ease, background .25s ease;
+  }
+  .fab .icon{color:var(--mint-400); width:20px; height:20px;}
+  .fab:hover{transform:translateY(-3px) scale(1.03); background:var(--brand-700); box-shadow:0 16px 30px -8px rgba(6,47,43,0.6);}
+  .fab-label{white-space:nowrap;}
+  @media (max-width:600px){
+    .fab-label{display:none;}
+    .fab{padding:13px; border-radius:50%;}
   }
 </style>
 </head>
 <body>
 
+<header class="site" id="siteHeader">
+  <div class="wrap nav-inner">
+    <div class="brand">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21v-8h6v8"/></svg>
+      Vanilla House
+    </div>
+    <nav class="nav-links">
+      <a href="#privileges">Привилегии</a>
+      <a href="#rules">Правила</a>
+      <button class="nav-cta" id="navCopyBtn">
+        <svg class="icon" id="navCopyIcon" style="width:16px;height:16px" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span id="navCopyLabel">IP сервера</span>
+      </button>
+    </nav>
+    <button class="burger" id="burgerBtn" aria-label="Открыть меню">
+      <svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#privileges" class="mm-link">Привилегии</a>
+  <a href="#rules" class="mm-link">Правила</a>
+  <button class="nav-cta" id="mobileCopyBtn">
+    <svg class="icon" id="mobileCopyIcon" style="width:18px;height:18px" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    <span id="mobileCopyLabel">Скопировать IP</span>
+  </button>
+</div>
+
 <section class="hero">
+  <div class="stars" id="starsField"></div>
+
   <div class="wrap">
-    <div class="eyebrow">Minecraft · выживание</div>
-    <h1 class="display">Vanilla House</h1>
-    <div class="sub">
-      <span class="mono">ВЕРСИЯ 1.21.11</span>
-      <span class="divider">/</span>
-      <span class="status"><span class="dot"></span>ОНЛАЙН</span>
+    <div class="hero-status">
+      <span class="status-dot"></span>
+      <span>Сервер онлайн</span>
+      <span class="mono">v1.21.11</span>
     </div>
 
-    <div class="ip-field">
-      <span class="label">IP сервера</span>
-      <input id="ipInput" type="text" value="today.vanilla.house" readonly="" aria-label="IP адрес сервера">
-      <button id="copyBtn" type="button">Копировать</button>
+    <h1>Добро пожаловать в <span>Vanilla House</span></h1>
+    <p class="lead">Честное ванильное выживание без лишнего доната. Стабильный сервер, живое комьюнити.</p>
+
+    <div class="ip-box">
+      <div class="ip-pill">
+        <div>
+          <div class="ip-label">IP-адрес</div>
+          <div class="ip-value mono" id="ipText">today.vanilla.house</div>
+        </div>
+      </div>
+      <button class="copy-btn" id="heroCopyBtn">
+        <svg class="icon" id="copyIcon" style="width:18px;height:18px" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span id="copyLabel">Скопировать IP</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- blocky low-poly mountain scenery -->
+  <div class="scenery">
+    <svg class="layer-back" viewBox="0 0 1600 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="0,280 0,180 90,120 180,170 260,90 340,160 430,110 520,175 610,130 700,190 800,140 900,185 1000,120 1090,175 1180,130 1280,190 1370,150 1460,200 1550,160 1600,190 1600,280" fill="#0A4B44"/>
+      <polygon points="1600,280 1600,180 1690,120 1780,170 1860,90 1940,160 2030,110 2120,175 2210,130 2300,190 2400,140 2500,185 2600,120 2690,175 2780,130 2880,190 2970,150 3060,200 3150,160 3200,190 3200,280" fill="#0A4B44" transform="translate(-1600,0)"/>
+    </svg>
+    <svg class="layer-mid" viewBox="0 0 1600 240" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="0,240 0,150 70,100 150,140 230,70 320,130 410,90 500,150 600,100 700,160 800,110 900,150 1000,90 1100,140 1200,100 1300,160 1400,120 1500,150 1600,110 1600,240" fill="#0E5C54"/>
+      <polygon points="1600,240 1600,150 1670,100 1750,140 1830,70 1920,130 2010,90 2100,150 2200,100 2300,160 2400,110 2500,150 2600,90 2700,140 2800,100 2900,160 3000,120 3100,150 3200,110 3200,240" fill="#0E5C54" transform="translate(-1600,0)"/>
+    </svg>
+    <svg class="layer-front" viewBox="0 0 1600 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="0,200 0,120 60,80 130,110 210,60 300,105 390,75 480,115 570,85 660,125 760,90 860,120 960,70 1060,110 1160,80 1260,130 1360,95 1460,120 1560,85 1600,110 1600,200" fill="#14B8A6"/>
+      <polygon points="1600,200 1600,120 1660,80 1730,110 1810,60 1900,105 1990,75 2080,115 2170,85 2260,125 2360,90 2460,120 2560,70 2660,110 2760,80 2860,130 2960,95 3060,120 3160,85 3200,110 3200,200" fill="#14B8A6" transform="translate(-1600,0)"/>
+    </svg>
+  </div>
+
+  <div class="hero-fade" aria-hidden="true"></div>
+  <div class="hero-divider" aria-hidden="true">
+    <svg viewBox="0 0 1440 110" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,50 C240,100 480,0 720,30 C960,60 1200,100 1440,45 L1440,110 L0,110 Z"/>
+    </svg>
+  </div>
+</section>
+
+<section id="privileges">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Привилегии</div>
+      <h2>Донат навсегда, разовая оплата</h2>
+      <p>Никакой подписки и переплат — один платёж открывает привилегию насовсем. Выбирай под свой стиль игры.</p>
+    </div>
+
+    <div class="priv-grid">
+
+      <!-- Hunter -->
+      <div class="priv-card reveal">
+        <div class="top-row">
+          <div class="priv-icon">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M17 3l4 4-6 6-4-4z"/><path d="M11 9 4 20"/></svg>
+          </div>
+          <div class="price">39₽</div>
+        </div>
+        <h3>Hunter</h3>
+        <div class="cmd-list">
+          <span class="cmd">/wb</span><span class="cmd">/kit hunter</span>
+        </div>
+        <div class="meta-row">
+          <div class="meta-item">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
+            <span><b>2</b> точки дома (/home)</span>
+          </div>
+          <div class="meta-item">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            <span>Регион до <b>75 000</b> блоков</span>
+          </div>
+          <span class="prefix-tag">[Hunter]</span>
+        </div>
+        <a class="buy-btn" href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+          Купить
+        </a>
+      </div>
+
+      <!-- Miner -->
+      <div class="priv-card reveal">
+        <div class="top-row">
+          <div class="priv-icon">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M4 5c4-2.5 10-2.5 14 1.5s3.5 10 1.5 14"/><path d="M10 10 3 21"/></svg>
+          </div>
+          <div class="price">89₽</div>
+        </div>
+        <h3>Miner</h3>
+        <div class="cmd-list">
+          <span class="cmd">/wb</span><span class="cmd">/ec</span><span class="cmd">/kit miner</span>
+        </div>
+        <div class="meta-row">
+          <div class="meta-item">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
+            <span><b>3</b> точки дома (/home)</span>
+          </div>
+          <div class="meta-item">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            <span>Регион до <b>100 000</b> блоков</span>
+          </div>
+          <span class="prefix-tag">[Miner]</span>
+        </div>
+        <a class="buy-btn primary" href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+          Купить
+        </a>
+      </div>
+
+      <!-- Griefer -->
+      <div class="priv-card reveal">
+        <div class="top-row">
+          <div class="priv-icon">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="10" cy="14" r="7"/><path d="M14.5 9.5 18 6"/><path d="M18 6l3-1.5"/><path d="M21 2l-1 3"/></svg>
+          </div>
+          <div class="price">149₽</div>
+        </div>
+        <h3>Griefer</h3>
+        <div class="cmd-list">
+          <span class="cmd">/wb</span><span class="cmd">/ec</span><span class="cmd">/heal</span><span class="cmd">/kit griefer</span>
+        </div>
+        <div class="meta-row">
+          <div class="meta-item">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
+            <span><b>4</b> точки дома (/home)</span>
+          </div>
+          <div class="meta-item">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            <span>Регион до <b>125 000</b> блоков</span>
+          </div>
+          <span class="prefix-tag">[Griefer]</span>
+        </div>
+        <a class="buy-btn" href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+          Купить
+        </a>
+      </div>
+
+      <!-- Youtuber -->
+      <div class="priv-card reveal">
+        <div class="top-row">
+          <div class="priv-icon">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="5" width="15" height="14" rx="3"/><path d="M17 9l5-3v12l-5-3"/></svg>
+          </div>
+          <div class="price free">Бесплатно</div>
+        </div>
+        <h3>Youtuber</h3>
+        <div class="desc">Выдаётся по заявке при выполнении условий.</div>
+        <div class="req-box">
+          <b>Требования:</b> от 100 подписчиков на YouTube (300 в TikTok), от 10 роликов о сервере без оскорблений, стабильный актив на сервере.
+        </div>
+        <div class="cmd-list">
+          <span class="cmd">/wb</span><span class="cmd">/ec</span><span class="cmd">/heal</span><span class="cmd">/kit youtuber</span>
+        </div>
+        <div class="meta-row">
+          <span class="prefix-tag">[Youtuber]</span>
+        </div>
+        <a class="buy-btn ghost" href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+          Подать заявку
+        </a>
+      </div>
+
+      <!-- Moderator -->
+      <div class="priv-card reveal">
+        <div class="top-row">
+          <div class="priv-icon">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <div class="price locked">Не продаётся</div>
+        </div>
+        <h3>Moderator</h3>
+        <div class="desc">Назначается администрацией за заслуги перед сервером.</div>
+        <div class="cmd-list">
+          <span class="cmd">/ban</span><span class="cmd">/banip</span><span class="cmd">/pardon</span><span class="cmd">/pardon-ip</span><span class="cmd">/fly</span><span class="cmd">/gm survival</span><span class="cmd">/gm spec</span>
+        </div>
+        <div class="meta-row">
+          <div class="meta-item">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+            <span>Доступ в закрытую Telegram-группу</span>
+          </div>
+          <span class="prefix-tag">[Moderator]</span>
+        </div>
+        <a class="buy-btn ghost" href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+          Написать администрации
+        </a>
+      </div>
+
     </div>
   </div>
 </section>
 
-<section class="section" id="tiers">
+<section id="rules" class="rules-wrap">
   <div class="wrap">
-    <div class="section-head">
-      <div class="kicker">Донат-привилегии</div>
-      <h2>Выбери свою роль</h2>
-      <p>Каждая привилегия навсегда — плати один раз и получай доступ до конца существования сервера.</p>
+    <div class="section-head reveal">
+      <div class="eyebrow">Правила и безопасность</div>
+      <h2>Играем честно, храним стабильность</h2>
+      <p>Мы заботимся о сохранности прогресса игроков и следим за порядком на сервере.</p>
     </div>
 
-    <div class="tiers">
-
-      <!-- HUNTER -->
-      <article class="tier">
-        <div class="tier-art">
-          <img src="./Vanilla House — Minecraft сервер_files/hunter.png" alt="Hunter — привилегия Vanilla House">
-          <span class="price-tag">39₽</span>
+    <div class="rules-grid">
+      <div class="rule-card reveal">
+        <div class="rule-icon">
+          <svg class="icon" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.66 3.58 3 8 3s8-1.34 8-3V6"/><path d="M4 12v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/></svg>
         </div>
-        <div class="tier-body">
-          <h3 class="tier-name display">Hunter</h3>
-          <div class="tier-duration">Навсегда</div>
-          <ul class="perk-list">
-            <li><span class="cmd">/wb</span> — Верстак</li>
-            <li><span class="cmd">/kit hunter</span> — Кит Хантера</li>
-          </ul>
-          <div class="prefix">Префикс <span>[ Hunter ]</span></div>
-          <a class="buy-btn" href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener">Купить</a>
+        <div>
+          <h3>Резервные копии</h3>
+          <p>Регулярные бэкапы — данные восстанавливаются даже после краша или взлома.</p>
         </div>
-      </article>
-
-      <!-- MINER -->
-      <article class="tier">
-        <div class="tier-art">
-          <img src="./Vanilla House — Minecraft сервер_files/miner.png" alt="Miner — привилегия Vanilla House">
-          <span class="price-tag">89₽</span>
-        </div>
-        <div class="tier-body">
-          <h3 class="tier-name display">Miner</h3>
-          <div class="tier-duration">Навсегда</div>
-          <ul class="perk-list">
-            <li><span class="cmd">/wb</span> — Верстак</li>
-            <li><span class="cmd">/ec</span> — Эндер сундук</li>
-            <li><span class="cmd">/kit miner</span> — Кит Майнера</li>
-          </ul>
-          <div class="prefix">Префикс <span>[ Miner ]</span></div>
-          <a class="buy-btn" href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener">Купить</a>
-        </div>
-      </article>
-
-      <!-- GRIEFER -->
-      <article class="tier">
-        <div class="tier-art">
-          <img src="./Vanilla House — Minecraft сервер_files/griefer.png" alt="Griefer — привилегия Vanilla House">
-          <span class="price-tag">149₽</span>
-        </div>
-        <div class="tier-body">
-          <h3 class="tier-name display">Griefer</h3>
-          <div class="tier-duration">Навсегда</div>
-          <ul class="perk-list">
-            <li><span class="cmd">/wb</span> — Верстак</li>
-            <li><span class="cmd">/ec</span> — Эндер сундук</li>
-            <li><span class="cmd">/heal</span> — Регенерация</li>
-            <li><span class="cmd">/kit griefer</span> — Кит Грифера</li>
-          </ul>
-          <div class="prefix">Префикс <span>[ Griefer ]</span></div>
-          <a class="buy-btn" href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener">Купить</a>
-        </div>
-      </article>
-
-      <!-- YOUTUBER -->
-      <article class="tier">
-        <div class="tier-art">
-          <img src="./Vanilla House — Minecraft сервер_files/youtuber.png" alt="Youtuber — привилегия Vanilla House">
-          <span class="price-tag free-tag">Бесплатно</span>
-        </div>
-        <div class="tier-body">
-          <h3 class="tier-name display">Youtuber</h3>
-          <div class="tier-duration">Навсегда · по заявке</div>
-          <ul class="yt-reqs">
-            <li>От 100 подписчиков на YouTube (300 в TikTok)</li>
-            <li>От 10 роликов про сервер, без оскорблений</li>
-            <li>Стабильный актив на сервере</li>
-          </ul>
-          <ul class="perk-list">
-            <li><span class="cmd">/wb</span> — Верстак</li>
-            <li><span class="cmd">/ec</span> — Эндер сундук</li>
-            <li><span class="cmd">/heal</span> — Регенерация</li>
-            <li><span class="cmd">/kit youtuber</span> — Кит Ютубера</li>
-          </ul>
-          <div class="prefix">Префикс <span>[ Youtuber ]</span></div>
-          <a class="buy-btn free" href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener">Подать заявку</a>
-        </div>
-      </article>
-
-    </div>
-  </div>
-</section>
-
-<section class="section" id="rules">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="kicker">Безопасность</div>
-      <h2>Защита и правила</h2>
-    </div>
-
-    <div class="rules">
-      <div class="rule-card">
-        <div class="icon">⛁</div>
-        <h3>Резервные копии</h3>
-        <p>Регулярные бэкапы сервера. Даже если произойдёт краш или попытка взлома — данные восстановятся.</p>
       </div>
 
-      <div class="rule-card">
-        <div class="icon">∿</div>
-        <h3>Защита от лагов</h3>
-        <p>Жёсткие ограничения на лаг-машины и эксплойты. Стабильная работа для всех игроков.</p>
+      <div class="rule-card reveal">
+        <div class="rule-icon">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 4 5-8"/></svg>
+        </div>
+        <div>
+          <h3>Защита от лагов</h3>
+          <p>Ограничения на лаг-машины и эксплойты для стабильной работы сервера.</p>
+        </div>
       </div>
 
-      <div class="rule-card">
-        <div class="icon">⚠</div>
-        <h3>Взлом / краш</h3>
-        <p>Попытка сломать сервер = <b>бан аккаунта + бан по IP</b>. Без предупреждений.</p>
+      <div class="rule-card reveal">
+        <div class="rule-icon warn">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.9" y1="4.9" x2="19.1" y2="19.1"/></svg>
+        </div>
+        <div>
+          <h3>Взлом / краш сервера</h3>
+          <p>Бан аккаунта и бан по IP без предупреждений.</p>
+        </div>
       </div>
 
-      <div class="rule-card">
-        <div class="icon">⛔</div>
-        <h3>Читы / чит-клиенты</h3>
-        <p>Использование читов = <b>бан по IP + блокировка аккаунта навсегда</b>. Никаких предупреждений и апелляций.</p>
+      <div class="rule-card reveal">
+        <div class="rule-icon warn">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div>
+          <h3>Читы / чит-клиенты</h3>
+          <p>Бан по IP и блокировка аккаунта навсегда — без предупреждений и апелляций.</p>
+        </div>
       </div>
 
-      <div class="rule-card">
-        <div class="icon">⟨/⟩</div>
-        <h3>Багюз / эксплойты</h3>
-        <p>Использование багов и недочётов сервера в своих целях = <b>блокировка навсегда</b>. Если нашёл баг — <span class="warn">сообщи в поддержку</span>, иначе бан. Распространение эксплойтов также карается перманентным баном.</p>
+      <div class="rule-card reveal">
+        <div class="rule-icon warn">
+          <svg class="icon" viewBox="0 0 24 24"><rect x="8" y="6" width="8" height="12" rx="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="4" y1="10" x2="8" y2="10"/><line x1="16" y1="10" x2="20" y2="10"/><line x1="4" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="20" y2="16"/></svg>
+        </div>
+        <div>
+          <h3>Багюз / эксплойты</h3>
+          <p>Использование в своих целях — блокировка навсегда. О найденных багах сообщайте в поддержку.</p>
+        </div>
       </div>
-
     </div>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <div>Vanilla House · today.vanilla.house</div>
-    <div class="footer-links">
-      <a href="https://t.me/VHminecraft" target="_blank" rel="noopener">Telegram-канал</a>
-      <a href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener">Поддержка</a>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21v-8h6v8"/></svg>
+        Vanilla House
+      </div>
+      <div class="footer-links">
+        <a class="footer-link" href="https://t.me/VHminecraft" target="_blank" rel="noopener">
+          <svg class="icon" style="width:17px;height:17px" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+          @VHminecraft
+        </a>
+        <a class="footer-link" href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener">
+          <svg class="icon" style="width:17px;height:17px" viewBox="0 0 24 24"><path d="M4 4h16v12H7l-3 3z"/></svg>
+          Поддержка
+        </a>
+        <a class="footer-link" href="mailto:Vanilla-House-Minecraft@yandex.ru">
+          <svg class="icon" style="width:17px;height:17px" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          Написать на почту
+        </a>
+      </div>
+    </div>
+    <div class="legal-note">
+      <p class="legal-title">Пользовательское соглашение</p>
+      <p>Заходя на сайт Vanilla House и/или подключаясь по IP сервера, пользователь автоматически подтверждает, что ознакомился и согласен с настоящим соглашением, правилами сервера и условиями привилегий, а также обладает необходимым для этого возрастом и правом заключать такие соглашения самостоятельно либо с согласия законного представителя.</p>
+      <p>Vanilla House — независимый пользовательский проект и не аффилирован с Mojang Studios, Microsoft или Minecraft; все связанные товарные знаки принадлежат их правообладателям.</p>
+      <p>Привилегии являются виртуальными игровыми возможностями внутри сервера, не имеют денежного эквивалента вне игры, приобретаются на условиях «как есть» и по общему правилу возврату не подлежат, за исключением случаев, прямо согласованных с поддержкой.</p>
+      <p>Администрация и модерация вправе по своему усмотрению ограничивать, приостанавливать или прекращать доступ пользователя к серверу при нарушении правил, а также изменять правила, стоимость и содержание привилегий без предварительного уведомления; решения администрации по игровым вопросам являются окончательными.</p>
+      <p>Сайт и сервер предоставляются «как есть»; администрация не гарантирует бесперебойную работу и не несёт ответственности за потерю прогресса, данных или виртуального имущества, произошедшую по вине пользователя, третьих лиц или обстоятельств непреодолимой силы, помимо мер, предусмотренных резервным копированием.</p>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 VanillaMeowOG</span>
+      <span class="mono">today.vanilla.house · v1.21.11</span>
     </div>
   </div>
 </footer>
 
-<!-- Плавающие кнопки -->
-<div class="fab-container">
-  <a class="fab fab-support" href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener" aria-label="Поддержка Vanilla House" title="Техподдержка">
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2C6.48 2 2 6.48 2 12c0 1.82.49 3.53 1.35 5L2 22l5.1-1.31C8.54 21.52 10.22 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"></path>
-    </svg>
+<div class="floaters">
+  <a class="fab" href="mailto:Vanilla-House-Minecraft@yandex.ru">
+    <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+    <span class="fab-label">Почта</span>
   </a>
-  <a class="fab fab-tg" href="https://t.me/VHminecraft" target="_blank" rel="noopener" aria-label="Telegram-канал Vanilla House" title="Наш Telegram">
-    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
-      <path fill="#fff" d="M180 71l-19 116c-1.4 6.4-5.2 8-10.6 5l-29.4-21.7-14.2 13.7c-1.6 1.6-2.9 2.9-6 2.9l2.1-30.2 55-49.7c2.4-2.1-.5-3.3-3.7-1.2l-68 42.8-29.3-9.2c-6.4-2-6.5-6.4 1.3-9.5l114.5-44.1c5.3-1.9 9.9 1.3 8.3 9.2z"></path>
-    </svg>
+  <a class="fab" href="https://t.me/VanillaHouseSupport" target="_blank" rel="noopener">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16v12H7l-3 3z"/></svg>
+    <span class="fab-label">Поддержка</span>
+  </a>
+  <a class="fab" href="https://t.me/VHminecraft" target="_blank" rel="noopener">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+    <span class="fab-label">Telegram</span>
   </a>
 </div>
 
 <script>
-  const copyBtn = document.getElementById('copyBtn');
-  const ipInput = document.getElementById('ipInput');
-  copyBtn.addEventListener('click', async () => {
-    try{
-      await navigator.clipboard.writeText(ipInput.value);
-    }catch(e){
-      ipInput.select();
-      document.execCommand('copy');
-    }
-    const original = copyBtn.textContent;
-    copyBtn.textContent = 'Скопировано';
-    copyBtn.classList.add('copied');
-    setTimeout(()=>{
-      copyBtn.textContent = original;
-      copyBtn.classList.remove('copied');
-    }, 1600);
+  // header scroll state
+  const header = document.getElementById('siteHeader');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 20);
   });
+
+  // burger menu
+  const burgerBtn = document.getElementById('burgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  burgerBtn.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('open');
+    burgerBtn.innerHTML = open
+      ? '<svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+      : '<svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
+  });
+  document.querySelectorAll('.mm-link').forEach(l => l.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    burgerBtn.innerHTML = '<svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
+  }));
+
+  // copy IP
+  const SERVER_IP = 'today.vanilla.house';
+  const CHECK_ICON = '<polyline points="20 6 9 17 4 12"/>';
+  const CLIPBOARD_ICON = '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>';
+
+  function copyIP(onDone){
+    navigator.clipboard.writeText(SERVER_IP).then(onDone).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = SERVER_IP; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      onDone();
+    });
+  }
+
+  // wires up a copy button: shows a checkmark + "Скопировано" for 1.8s, then restores it
+  function wireCopyButton(btnId, iconId, labelId, defaultLabel, afterCopy){
+    const btn = document.getElementById(btnId);
+    const icon = document.getElementById(iconId);
+    const label = document.getElementById(labelId);
+    btn.addEventListener('click', () => {
+      copyIP(() => {
+        btn.classList.add('copied');
+        icon.innerHTML = CHECK_ICON;
+        label.textContent = 'Скопировано';
+        if (afterCopy) afterCopy();
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          icon.innerHTML = CLIPBOARD_ICON;
+          label.textContent = defaultLabel;
+        }, 1800);
+      });
+    });
+  }
+
+  wireCopyButton('heroCopyBtn', 'copyIcon', 'copyLabel', 'Скопировать IP');
+  wireCopyButton('navCopyBtn', 'navCopyIcon', 'navCopyLabel', 'IP сервера');
+  wireCopyButton('mobileCopyBtn', 'mobileCopyIcon', 'mobileCopyLabel', 'Скопировать IP', () => {
+    setTimeout(() => mobileMenu.classList.remove('open'), 700);
+  });
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.15});
+  revealEls.forEach(el => io.observe(el));
+
+  // tiny star field in hero
+  const starsField = document.getElementById('starsField');
+  for(let i=0;i<40;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random()*100+'%';
+    s.style.top = Math.random()*60+'%';
+    s.style.animationDelay = (Math.random()*3)+'s';
+    starsField.appendChild(s);
+  }
 </script>
-
-
-
-</body></html>
+</body>
+</html>
